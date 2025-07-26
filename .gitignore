@@ -1,0 +1,12 @@
+*.log
+*.csv
+*.json
+*.parquet
+*.pt
+*.pth
+*.pkl
+*.ptl
+*.ptl.tar
+*.ptl.tar.gz
+*.safetensors
+*.pyc
