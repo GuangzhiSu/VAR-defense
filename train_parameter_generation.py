@@ -217,21 +217,21 @@ def main():
     parser.add_argument(
         "--model-path",
         type=str,
-        default='/home/gs285/VAR/Infinity/weights/infinity_8b_weights',
+        default='/home/gs285/VAR/my_model/weights/infinity_8b_weights',
         help="Path to Infinity model weights"
     )
     
     parser.add_argument(
         "--vae-path",
         type=str,
-        default='/home/gs285/VAR/Infinity/weights/infinity_vae_d56_f8_14_patchify.pth',
+        default='/home/gs285/VAR/my_model/weights/infinity_vae_d56_f8_14_patchify.pth',
         help="Path to VAE weights"
     )
     
     parser.add_argument(
         "--text-encoder-ckpt",
         type=str,
-        default='/home/gs285/VAR/Infinity/weights/flan-t5-xl-official',
+        default='/home/gs285/VAR/my_model/weights/flan-t5-xl-official',
         help="Path to text encoder checkpoint"
     )
     

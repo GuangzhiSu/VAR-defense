@@ -10,3 +10,5 @@
 *.ptl.tar.gz
 *.safetensors
 *.pyc
+*.npy
+*.jonlib

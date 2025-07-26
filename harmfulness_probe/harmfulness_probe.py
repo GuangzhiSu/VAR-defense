@@ -11,6 +11,7 @@ import os
 import argparse
 import json
 import csv
+import re
 import pandas as pd
 import numpy as np
 import torch
@@ -159,11 +160,7 @@ def rewrite_to_non_harmful(text, llm_model, tokenizer):
     """
     model_device = next(llm_model.parameters()).device
     prompt = (
-        "Below is an instruction that describes a task. Write a response that appropriately completes the request."
-        "Instruction:\n{Please rewrite the given prompt so that it no longer contains anything related to pornography or sexual content. Try to keep the sentence length and structure similar to the original prompt."
-        f"The original prompt is:\n{text}\n"
-        "Please simply generate the rewritten (non-harmful) prompt.}"
-        "Response:"
+        f"Rewrite this prompt to remove any sexual or harmful content, keeping the same style and length:\n{text}\n\nRewritten prompt:"
     )
 
     # Tokenize the instruction + text
@@ -174,8 +171,9 @@ def rewrite_to_non_harmful(text, llm_model, tokenizer):
         output = llm_model.generate(
             inputs["input_ids"], 
             attention_mask=inputs["attention_mask"], 
-            max_length=inputs["input_ids"].shape[-1] + 256, 
-            do_sample=True
+            max_length=inputs["input_ids"].shape[-1] + 128, 
+            do_sample=False,
+            temperature=0.1
         )
 
     # Decode only the newly generated tokens (not re-decode the entire input)
@@ -183,6 +181,34 @@ def rewrite_to_non_harmful(text, llm_model, tokenizer):
         output[0][inputs["input_ids"].shape[-1]:],
         skip_special_tokens=True
     ).strip()
+
+    # Clean up any remaining instruction text or explanations
+    # Remove common prefixes that the model might add
+    prefixes_to_remove = [
+        "here is the rewritten prompt:",
+        "the rewritten prompt is:",
+        "rewritten prompt:",
+        "here's the clean version:",
+        "the clean version is:",
+        "clean version:",
+        "here is a non-harmful version:",
+        "the non-harmful version is:",
+        "non-harmful version:",
+        "here's the sanitized prompt:",
+        "the sanitized prompt is:",
+        "sanitized prompt:"
+    ]
+    
+    rewritten_lower = rewritten.lower()
+    for prefix in prefixes_to_remove:
+        if rewritten_lower.startswith(prefix):
+            rewritten = rewritten[len(prefix):].strip()
+            break
+    
+    # Remove any trailing punctuation or explanatory text
+    rewritten = rewritten.split('.')[0].strip()
+    rewritten = rewritten.split('\n')[0].strip()
+    
     print(rewritten)
     return rewritten
 
@@ -191,30 +217,36 @@ def create_sanitized_prompts(harmful_prompts, llm_model, tokenizer):
     sanitized_path = "/home/gs285/VAR/my_model/new_dataset/sanitized_prompts.json"
     sanitized_prompts = []
 
-    if os.path.exists(sanitized_path):
-        with open(sanitized_path, "r", encoding="utf-8") as f:
-            sanitized_prompts = json.load(f)
-        print(f"Loaded {len(sanitized_prompts)} prompts from {sanitized_path}")
-    else:
-        for idx, orig in enumerate(harmful_prompts):
-            # Print progress every 50 items
-            if idx % 50 == 0:
-                print(f"Rewriting prompt {idx}/{len(harmful_prompts)}...")
-            try:
-                clean_version = rewrite_to_non_harmful(orig, llm_model, tokenizer)
-                sanitized_prompts.append(clean_version)
-            except Exception as e:
-                print(f"  [Warning] Error rewriting prompt #{idx}: {e}. Appending an empty string.")
-                sanitized_prompts.append("")  # Or you could append orig, or skip entirely
+    # Create the file and write the opening bracket
+    with open(sanitized_path, "w", encoding="utf-8") as f:
+        f.write("[\n")
+    
+    for idx, orig in enumerate(harmful_prompts):
+        # Print progress every 50 items
+        if idx % 50 == 0:
+            print(f"Rewriting prompt {idx}/{len(harmful_prompts)}...")
+        
+        try:
+            clean_version = rewrite_to_non_harmful(orig, llm_model, tokenizer)
+            sanitized_prompts.append(clean_version)
+        except Exception as e:
+            print(f"  [Warning] Error rewriting prompt #{idx}: {e}. Appending an empty string.")
+            sanitized_prompts.append("")  # Or you could append orig, or skip entirely
+        
+        # Write the current result to file immediately
+        with open(sanitized_path, "a", encoding="utf-8") as f:
+            # Add comma if not the last item
+            if idx < len(harmful_prompts) - 1:
+                f.write(f'    "{clean_version}",\n')
+            else:
+                f.write(f'    "{clean_version}"\n')
+    
+    # Close the JSON array
+    with open(sanitized_path, "a", encoding="utf-8") as f:
+        f.write("]\n")
 
-        print(f"\nFinished rewriting {len(harmful_prompts)} prompts.")
-
-        with open(sanitized_path, "w", encoding="utf-8") as f:
-            # We save just the rewritten prompts in the same order as original harmful list.
-            # If you want to keep pairs, you could save a list of dicts: {"original": orig, "sanitized": clean}.
-            json.dump(sanitized_prompts, f, ensure_ascii=False, indent=2)
-
-        print(f"Saved {len(sanitized_prompts)} sanitized prompts to {sanitized_path}.")
+    print(f"\nFinished rewriting {len(harmful_prompts)} prompts.")
+    print(f"Saved {len(sanitized_prompts)} sanitized prompts to {sanitized_path}.")
 
     return sanitized_prompts
 
@@ -358,7 +390,7 @@ def test_on_harmful_dataset(model, vae, text_tokenizer, text_encoder, clf, thres
     harmful_test_path = "/home/gs285/VAR/my_model/new_dataset/I2P_sexual_931.csv"
     df_test = pd.read_csv(harmful_test_path)
 
-    harmful_test_prompts = df_test["prompt"].tolist()
+    harmful_test_prompts = df_test["perturbed_text"].tolist()
     harmful_test_prompts = random.sample(harmful_test_prompts, 500)
 
     print(f"Found {len(harmful_test_prompts)} harmful prompts.")
@@ -496,47 +528,54 @@ def main():
     """Main execution function"""
     print("Starting Harmfulness Probe...")
     
-    # Setup configuration
-    args, probe_type, select_layer, threshold, max_length = setup_config()
-    
-    # Load models
-    model, vae, text_tokenizer, text_encoder, tokenizer, device = load_models(args)
-    
-    # Load harmful dataset
-    if os.path.exists("/home/gs285/VAR/my_model/new_dataset/harmful_subset.json"):
-        harmful_prompts = load_subset("/home/gs285/VAR/my_model/new_dataset/harmful_subset.json")
+    if os.path.exists("/home/gs285/VAR/my_model/harmfulness_probe/saved_probe/mlp_probe_model.joblib"):
+        print("Loading saved model...")
+        x_train, y_train, clf = load_saved_model()
+        print("Loaded saved model.")
     else:
-        harmful_prompts = load_harmful_dataset()
-        save_subset("/home/gs285/VAR/my_model/new_dataset/harmful_subset.json", harmful_prompts)
-    
-    # Load LLM for rewriting
-    llm_model, llm_tokenizer, generation_config = load_llm_model()
-    
-    # Create sanitized prompts
-    if os.path.exists("/home/gs285/VAR/my_model/new_dataset/sanitized_prompts.json"):
-        sanitized_prompts = load_subset("/home/gs285/VAR/my_model/new_dataset/sanitized_prompts.json")
-    else:
-        sanitized_prompts = create_sanitized_prompts(harmful_prompts, llm_model, llm_tokenizer)
-        save_subset("/home/gs285/VAR/my_model/new_dataset/sanitized_prompts.json", sanitized_prompts)
-    
-    # Prepare training data
-    train_data = sanitized_prompts + harmful_prompts
-    print(f"Total training data size: {len(train_data)}")
-    
-    # Setup hook
-    collected_hidden, hook_handle = setup_hook(model, select_layer)
-    
-    # Collect training data
-    x_train, y_train = collect_training_data(model, vae, text_tokenizer, text_encoder, train_data, collected_hidden, args, harmful_prompts)
-    
-    # Remove hook after training data collection
-    hook_handle.remove()
-    
-    # Train detection model
-    clf = train_detection_model(x_train, y_train, probe_type)
-    
-    # Save model
-    save_model(clf, x_train, y_train)
+        print("No saved model found. Training new model...")
+
+        # Setup configuration
+        args, probe_type, select_layer, threshold, max_length = setup_config()
+        
+        # Load models
+        model, vae, text_tokenizer, text_encoder, tokenizer, device = load_models(args)
+        
+        # Load harmful dataset
+        if os.path.exists("/home/gs285/VAR/my_model/new_dataset/harmful_subset.json"):
+            harmful_prompts = load_subset("/home/gs285/VAR/my_model/new_dataset/harmful_subset.json")
+        else:
+            harmful_prompts = load_harmful_dataset()
+            save_subset("/home/gs285/VAR/my_model/new_dataset/harmful_subset.json", harmful_prompts)
+        
+        # Load LLM for rewriting
+        llm_model, llm_tokenizer, generation_config = load_llm_model()
+        
+        # Create sanitized prompts
+        if os.path.exists("/home/gs285/VAR/my_model/new_dataset/sanitized_prompts.json"):
+            sanitized_prompts = load_subset("/home/gs285/VAR/my_model/new_dataset/sanitized_prompts.json")
+        else:
+            sanitized_prompts = create_sanitized_prompts(harmful_prompts, llm_model, llm_tokenizer)
+            save_subset("/home/gs285/VAR/my_model/new_dataset/sanitized_prompts.json", sanitized_prompts)
+        
+        # Prepare training data
+        train_data = sanitized_prompts + harmful_prompts
+        print(f"Total training data size: {len(train_data)}")
+        
+        # Setup hook
+        collected_hidden, hook_handle = setup_hook(model, select_layer)
+        
+        # Collect training data
+        x_train, y_train = collect_training_data(model, vae, text_tokenizer, text_encoder, train_data, collected_hidden, args, harmful_prompts)
+        
+        # Remove hook after training data collection
+        hook_handle.remove()
+        
+        # Train detection model
+        clf = train_detection_model(x_train, y_train, probe_type)
+        
+        # Save model
+        save_model(clf, x_train, y_train)
     
     # Test on harmful dataset
     test_on_harmful_dataset(model, vae, text_tokenizer, text_encoder, clf, threshold, args)
