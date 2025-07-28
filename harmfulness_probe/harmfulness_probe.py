@@ -46,7 +46,8 @@ def setup_config():
 
     model_path = '/home/gs285/VAR/my_model/weights/infinity_8b_weights'
     vae_path = '/home/gs285/VAR/my_model/weights/infinity_vae_d56_f8_14_patchify.pth'
-    text_encoder_ckpt = '/home/gs285/VAR/my_model/weights/flan-t5-xl-official'
+    # Use Hugging Face Hub model name instead of local path since local path only has weights
+    text_encoder_ckpt = 'google/flan-t5-xl'
 
     args = argparse.Namespace(
         pn='1M',
@@ -69,7 +70,13 @@ def setup_config():
         cache_dir='/dev/shm',
         checkpoint_type='torch_shard',
         seed=0,
-        bf16=1
+        bf16=1,
+        select_cls_tokens=select_cls_tokens,
+        pos_size=pos_size,
+        neg_size=neg_size,
+        select_layer=select_layer,
+        threshold=threshold,
+        max_length=max_length
     )
     
     return args, probe_type, select_layer, threshold, max_length
@@ -78,12 +85,8 @@ def load_models(args):
     """Load all required models"""
     print("[Loading tokenizer and text encoder]")
     
-    # Load text encoder
-    try:
-        text_tokenizer, text_encoder = load_tokenizer(t5_path=args.text_encoder_ckpt)
-    except OSError:
-        # fallback to model hub name if local path fails
-        text_tokenizer, text_encoder = load_tokenizer(t5_path="google/flan-t5-xl")
+    # Load text encoder from Hugging Face Hub
+    text_tokenizer, text_encoder = load_tokenizer(t5_path=args.text_encoder_ckpt)
 
     device = torch.device("cuda")
     text_encoder = text_encoder.to(device)
@@ -453,7 +456,7 @@ def test_on_harmful_dataset(model, vae, text_tokenizer, text_encoder, clf, thres
 
     print(f"True positive rate on Test with threshold {threshold}: {np.mean(cors)} | {np.sum(cors)}")
 
-    with open("/home/gs285/VAR/my_model/new_dataset/cors.json", "w", encoding="utf-8") as f:
+    with open("/home/gs285/VAR/my_model/new_dataset/harmful_cors.json", "w", encoding="utf-8") as f:
         json.dump(cors, f, ensure_ascii=False, indent=2)
 
 def test_on_normal_dataset(model, vae, text_tokenizer, text_encoder, clf, threshold, args):
@@ -464,12 +467,17 @@ def test_on_normal_dataset(model, vae, text_tokenizer, text_encoder, clf, thresh
     nm_dataset = load_dataset("sentence-transformers/coco-captions", split="train")
 
     for example in nm_dataset:
-        if len(test_normal) < 600:
+        if len(test_normal) < 500:
             test_normal.append(example["caption1"])
 
     print(len(test_normal))
 
     cors_normal = []
+
+    h_div_w = 1/1
+    h_div_w_template_ = h_div_w_templates[np.argmin(np.abs(h_div_w_templates - h_div_w))]
+    scale_schedule = dynamic_resolution_h_w[h_div_w_template_][args.pn]['scales']
+    scale_schedule = [(1, h, w) for (_, h, w) in scale_schedule]
     
     # Setup hook for testing
     collected_hidden, hook_handle = setup_hook(model, args.select_layer)
@@ -511,6 +519,7 @@ def test_on_normal_dataset(model, vae, text_tokenizer, text_encoder, clf, thresh
         last_hidden = collected_hidden[-1]    # numpy, shape (seq_len, hidden_dim)
 
         probs = clf.predict_proba(last_hidden)[:, 1]  # shape = (seq_len,)
+        
         max_detection_score = float(np.max(probs))
 
         cors_normal.append(max_detection_score >= threshold)
@@ -520,13 +529,17 @@ def test_on_normal_dataset(model, vae, text_tokenizer, text_encoder, clf, thresh
 
     print(cors_normal)
     fpr = np.mean(cors_normal)
-
-    # Tune threshold to keep this ~< 1%
     print(f"False positive rate on harmless benchmark with threshold {threshold}: {fpr} | {np.sum(cors_normal)}")
+
+    with open("/home/gs285/VAR/my_model/new_dataset/normal_cors.json", "w", encoding="utf-8") as f:
+        json.dump(cors_normal, f, ensure_ascii=False, indent=2)
 
 def main():
     """Main execution function"""
     print("Starting Harmfulness Probe...")
+    # Setup configuration
+    args, probe_type, select_layer, threshold, max_length = setup_config()
+    model, vae, text_tokenizer, text_encoder, tokenizer, device = load_models(args)
     
     if os.path.exists("/home/gs285/VAR/my_model/harmfulness_probe/saved_probe/mlp_probe_model.joblib"):
         print("Loading saved model...")
@@ -535,12 +548,6 @@ def main():
     else:
         print("No saved model found. Training new model...")
 
-        # Setup configuration
-        args, probe_type, select_layer, threshold, max_length = setup_config()
-        
-        # Load models
-        model, vae, text_tokenizer, text_encoder, tokenizer, device = load_models(args)
-        
         # Load harmful dataset
         if os.path.exists("/home/gs285/VAR/my_model/new_dataset/harmful_subset.json"):
             harmful_prompts = load_subset("/home/gs285/VAR/my_model/new_dataset/harmful_subset.json")
@@ -578,10 +585,22 @@ def main():
         save_model(clf, x_train, y_train)
     
     # Test on harmful dataset
-    test_on_harmful_dataset(model, vae, text_tokenizer, text_encoder, clf, threshold, args)
+    if os.path.exists("/home/gs285/VAR/my_model/new_dataset/harmful_cors.json"):
+        print("Loading harmful cors...")
+        harmful_cors = json.load(open("/home/gs285/VAR/my_model/new_dataset/harmful_cors.json", "r", encoding="utf-8"))
+        print(f"Loaded {len(harmful_cors)} harmful cors.")
+    else:
+        print("No harmful cors found. Testing on harmful dataset...")
+        test_on_harmful_dataset(model, vae, text_tokenizer, text_encoder, clf, threshold, args)
     
     # Test on normal dataset
-    test_on_normal_dataset(model, vae, text_tokenizer, text_encoder, clf, threshold, args)
+    if os.path.exists("/home/gs285/VAR/my_model/new_dataset/normal_cors.json"):
+        print("Loading normal cors...")
+        normal_cors = json.load(open("/home/gs285/VAR/my_model/new_dataset/normal_cors.json", "r", encoding="utf-8"))
+        print(f"Loaded {len(normal_cors)} normal cors.")
+    else:
+        print("No normal cors found. Testing on normal dataset...")
+        test_on_normal_dataset(model, vae, text_tokenizer, text_encoder, clf, threshold, args)
     
     print("Harmfulness Probe completed!")
 
