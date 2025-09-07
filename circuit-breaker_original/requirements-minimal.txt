@@ -1,0 +1,56 @@
+# Minimal requirements for Infinity Circuit Breaker Training
+# Core packages only - install these first
+
+# PyTorch ecosystem
+torch==2.7.1
+torchvision==0.22.1
+xformers==0.0.31
+flash-attn==2.8.2
+
+# CUDA support
+nvidia-cublas-cu12==12.6.4.1
+nvidia-cuda-runtime-cu12==12.6.77
+nvidia-cudnn-cu12==9.5.1.17
+nvidia-nccl-cu12==2.26.2
+
+# Core ML libraries
+transformers==4.54.0
+accelerate==1.2.1
+peft==0.12.0
+safetensors==0.5.3
+huggingface-hub==0.34.1
+
+# Data processing
+numpy==2.2.6
+scipy==1.15.3
+pandas==2.2.3
+matplotlib==3.10.3
+
+# Computer vision
+opencv-python==4.11.0.86
+pillow==11.2.1
+kornia==0.8.1
+
+# Text processing
+tokenizers==0.21.2
+sentencepiece==0.2.0
+
+# Utilities
+tqdm==4.67.1
+einops==0.8.1
+omegaconf==2.3.0
+wandb==0.19.11
+rich==14.1.0
+click==8.1.8
+
+# Configuration
+pyyaml==6.0.2
+jsonlines==4.0.0
+
+# File I/O
+fsspec==2024.9.0
+filelock==3.18.0
+
+# System utilities
+psutil==7.0.0
+gputil==1.4.0
