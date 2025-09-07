@@ -12,4 +12,7 @@
 *.pyc
 *.npy
 *.jonlib
+*.joblib
 *.log
+*.txt
+*.npy
