@@ -1,0 +1,13 @@
+{
+  "is_master": true,
+  "name": "experiment",
+  "tag": "UK",
+  "cmd": "--bed ./checkpoints --local_out_path ./local_output --project_name infinity_circuit_breaker --exp_name experiment --ep 100 --opt adamw --cum 3 --sche lin0 --fp16 2 --ada 0.9_0.97 --tini -1 --tclip 5 --flash 0 --alng 5e-06 --saln 1 --cos 1 --enable_checkpointing full-block --tblr 6e-3 --pn 0.06M --lbs 4 --workers 4 --short_cap_prob 0.2 --online_t5 1 --use_streaming_dataset 1 --iterable_data_buffersize 30000 --Ct5 2048 --t5_path google/flan-t5-xl --vae_type 14 --wp 0.00000001 --wpe 1 --dynamic_resolution_across_gpus 1 --enable_dynamic_length_prompt 1 --reweight_loss_by_scale 1 --add_lvl_embeding_only_first_block 1 --rope2d_each_sa_layer 1 --rope2d_normalized_by_hw 2 --use_fsdp_model_ema 0 --always_training_scales 100 --use_bit_label 1 --zero 2 --save_model_iters_freq 100 --log_freq 50 --checkpoint_type torch --prefetch_factor 2 --noise_apply_strength 0.3 --noise_apply_layers 13 --apply_spatial_patchify 1 --use_flex_attn True --pad 128 --data_path ./data --data_load_reso 512 --tlen 512 --workers 4 --prefetch_factor 2 --harmful_prompts_path /home/gs285/VAR/my_model/prompt_generation/output/harmful_prompts --sanitized_prompts_path /home/gs285/VAR/my_model/prompt_generation/output/sanitized_prompts --validation_ratio 0.1 --category hate --target_layers 10,12,14,16,18,20 --transform_layers 10,12,14,16,18,20 --lorra_alpha 5.0 --trainsets AlpacaSupervisedDataset#HarmfulDataset --valsets AlpacaSupervisedDataset#HarmfulDataset --adv_string Sure here's --full_layers False --lora_r 8 --lora_alpha 16 --lora_dropout 0.05 --lora_target_modules q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj --lora_weight_path  --lora_bias none --q_lora False --model_name_or_path meta-llama/Llama-2-7b-chat-hf --adapter_name_or_path  --use_lora True --cache_dir  --optim adamw_torch --model_max_length 512 --grouped_to_max_length False --use_refusal_retain True --sc_train_subset  --log_every 10 --sc_train_seq_type all_text --coeff_schedule linear_converge --sc_loss_type orig_act_dotprod",
+  "branch": "master",
+  "last_upd": "2025-09-06 12:11",
+  "bsep": "4/100",
+  "G_lrwd": "1.6e-6/0.005",
+  "D_lrwd": "1.6e-6/0.0005",
+  "T_lrwd": "9.4e-5/0.005",
+  "opt": "adamw"
+}

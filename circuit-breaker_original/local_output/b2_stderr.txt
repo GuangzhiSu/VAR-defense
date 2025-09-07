@@ -1,0 +1,60 @@
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 536, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 532, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 362, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 98, in build_everything_from_args
+    iters_train, ld_train, ld_val = build_dataloaders(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 335, in build_dataloaders
+    ld_val = math.ceil(50000 / vbs)
+ZeroDivisionError: division by zero
+
+
+
+
+
+
+
+=======================================================   RESTART [08-12 11:55:47]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 546, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 542, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 372, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 111, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 160, in build_model_optimizer
+    vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+  File "/home/gs285/VAR/my_model/infinity/utils/load.py", line 43, in build_vae_gpt
+    raise ValueError(f"vae_type {args.vae_type} not supported")
+ValueError: vae_type 1 not supported
+
+
+
+
+
+
+
+=======================================================   RESTART [08-12 12:00:09]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 546, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 542, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 372, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 111, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 160, in build_model_optimizer
+    vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+  File "/home/gs285/VAR/my_model/infinity/utils/load.py", line 36, in build_vae_gpt
+    vae_local = vae_model(vae_st, schedule_mode, codebook_dim, codebook_size, patch_size=patch_size,
+  File "/home/gs285/VAR/my_model/infinity/models/bsq_vae/vae.py", line 251, in vae_model
+    vae, new_state_dict, loaded_keys = load_cnn(vae, state_dict["vae"], prefix="", expand=False)
+  File "/home/gs285/VAR/my_model/infinity/models/bsq_vae/vae.py", line 26, in load_cnn
+    model.state_dict()[_key].copy_(load_weights)
+RuntimeError: The size of tensor a (18) must match the size of tensor b (14) at non-singleton dimension 0

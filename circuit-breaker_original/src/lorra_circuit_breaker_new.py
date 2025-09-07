@@ -11,7 +11,9 @@ from deepspeed.runtime.zero.partition_parameters import ZeroParamStatus
 from peft import LoraConfig, get_peft_model
 import transformers
 from torch.nn.functional import cosine_similarity
-from transformers import Trainer, deepspeed, AutoTokenizer, AutoModelForCausalLM, AutoConfig
+import torch.nn.functional as F
+from transformers import Trainer, AutoTokenizer, AutoModelForCausalLM, AutoConfig
+from transformers.integrations import deepspeed
 import torch
 
 # from cb_train_dataset import (
@@ -22,8 +24,8 @@ import torch
 #     CircuitBreakerDataset
 # )
 
-from cb_train_dataset import (
-    CircuitBreakerDataset
+from cb_train_dataset_infinity import (
+    InfinityCircuitBreakerDataset
 )
 
 # =============== INFINITY ADAPTATION IMPORTS ===============
@@ -47,146 +49,229 @@ from args import (
     LorraArguments,
 )
 
+import torch
+import torch.nn.functional as F
+from typing import Dict, List, Tuple, Optional
+import gc
 
-
-
-
-def compute_infinity_circuit_breaker_loss(self, model, inputs, target_layers, alpha, return_outputs=False, tokenizer=None, **kwargs):
+def compute_infinity_circuit_breaker_loss(
+    trainer, 
+    model, 
+    inputs: Dict,
+    target_layers: List[int] = [0, 1, 2, 3, 4, 5],
+    alpha: float = 0.1,
+    return_outputs: bool = False,
+    tokenizer = None
+):
     """
-    INFINITY T2I Circuit Breaker Loss Function
-    Key differences from LLM version:
-    1. Input format: image_tokens + text_cond_tuple instead of text tokens
-    2. Model architecture: VAE + Transformer instead of pure LLM
-    3. Loss computation: image token space instead of text space
-    4. Generation process: autoregressive image token generation + VAE decoding
+    Compute circuit breaker loss for Infinity models
+    
+    Args:
+        trainer: InfinityTrainer instance
+        model: The model to compute loss for
+        inputs: Dictionary containing:
+            - text_cond_tuple: retain text condition tuple
+            - text_cond_tuple_circuit_breaker: circuit breaker text condition tuple  
+            - text_cond_tuple_val: validation text condition tuple
+            - input_ids: retain input ids
+            - attention_mask: retain attention mask
+            - input_ids_circuit_breaker: cb input ids
+            - attention_mask_circuit_breaker: cb attention mask
+            - input_ids_val: validation input ids
+            - attention_mask_val: validation attention mask
+        target_layers: List of layer indices to apply circuit breaker to
+        alpha: Circuit breaker coefficient
+        return_outputs: Whether to return outputs
+        tokenizer: Tokenizer for debugging
+    
+    Returns:
+        Combined loss (retain_loss + circuit_breaker_loss)
     """
-    self.current_training_step += 1
-    log_now = self.current_training_step % 10 == 0
-
-    # === INFINITY INPUT FORMAT ===
-    # Extract Infinity-specific inputs
-    text_cond_tuple = inputs.get("text_cond_tuple")  # (kv_compact, lens, cu_seqlens_k, max_seqlen_k)
-    image_tokens = inputs.get("image_tokens")  # VAE encoded image tokens
-    scale_schedule = inputs.get("scale_schedule")  # Dynamic resolution schedule
     
-    # Circuit breaker specific inputs
-    cb_text_cond_tuple = inputs.get("cb_text_cond_tuple")
-    cb_image_tokens = inputs.get("cb_image_tokens")
-    cb_scale_schedule = inputs.get("cb_scale_schedule")
+    # Extract inputs
+    retain_text_cond = inputs.get('text_cond_tuple')
+    cb_text_cond = inputs.get('text_cond_tuple_circuit_breaker') 
+    val_text_cond = inputs.get('text_cond_tuple_val')
     
-    # Validation inputs
-    val_text_cond_tuple = inputs.get("val_text_cond_tuple")
-    val_image_tokens = inputs.get("val_image_tokens")
-    val_scale_schedule = inputs.get("val_scale_schedule")
-
-    # === Step Coeff ===
-    progress = self.get_training_progress()
+    retain_input_ids = inputs.get('input_ids')
+    retain_attention_mask = inputs.get('attention_mask')
+    cb_input_ids = inputs.get('input_ids_circuit_breaker')
+    cb_attention_mask = inputs.get('attention_mask_circuit_breaker')
+    val_input_ids = inputs.get('input_ids_val')
+    val_attention_mask = inputs.get('attention_mask_val')
+    
+    # Get training progress for scheduling
+    progress = trainer.prog_it / trainer.max_it if hasattr(trainer, 'max_it') else 0.5
     scheduled_coeff = progress
-    print(f'\nPROGRESS: {progress:.4f}', '='*50)
-    retain_coeff, circuit_breaker_coeff = alpha * scheduled_coeff, alpha * (1-scheduled_coeff)
+    retain_coeff = alpha * scheduled_coeff
+    circuit_breaker_coeff = alpha * (1 - scheduled_coeff)
     
+    print(f'\nPROGRESS: {progress:.4f}', '='*50)
     print(f"retain_coeff: {retain_coeff:.4f} || circuit_breaker_coeff: {circuit_breaker_coeff:.4f}")
     
-    # === INFINITY LOSS COMPONENTS ===
+    # Initialize losses
     retain_loss = torch.tensor(0.0, device=model.device)
     circuit_breaker_loss = torch.tensor(0.0, device=model.device)
     
-    with model.disable_adapter():
-        model.eval()
+    # ===== RETAIN LOSS =====
+    if retain_coeff > 0 and retain_text_cond is not None:
+        # Get original model outputs (frozen)
         with torch.no_grad():
-            ### Retain control - normal image generation
+            model.eval()
+            # Create dummy image tokens for retain (since we only have text)
+            dummy_image_tokens = torch.randn(1, 256, 768, device=model.device)  # Adjust size as needed
+            
+            # Get original hidden states - try different model structures
+            orig_outputs = model(retain_text_cond, dummy_image_tokens, scale_schedule=[(1, 16, 16)])
+            orig_hidden_states = []
+            for layer_idx in target_layers:
+                if hasattr(model, 'blocks') and layer_idx < len(model.blocks):
+                    if hasattr(model.blocks[layer_idx], 'output_hidden_states'):
+                        orig_hidden_states.append(model.blocks[layer_idx].output_hidden_states.detach())
+                elif hasattr(model, 'unregistered_blocks') and layer_idx < len(model.unregistered_blocks):
+                    if hasattr(model.unregistered_blocks[layer_idx], 'get_hidden_states'):
+                        orig_hidden_states.append(model.unregistered_blocks[layer_idx].get_hidden_states().detach())
+            
+            model.train()
+        
+        # Get current model outputs
+        current_outputs = model(retain_text_cond, dummy_image_tokens, scale_schedule=[(1, 16, 16)])
+        current_hidden_states = []
+        for layer_idx in target_layers:
+            if hasattr(model, 'blocks') and layer_idx < len(model.blocks):
+                if hasattr(model.blocks[layer_idx], 'output_hidden_states'):
+                    current_hidden_states.append(model.blocks[layer_idx].output_hidden_states)
+            elif hasattr(model, 'unregistered_blocks') and layer_idx < len(model.unregistered_blocks):
+                if hasattr(model.unregistered_blocks[layer_idx], 'get_hidden_states'):
+                    current_hidden_states.append(model.unregistered_blocks[layer_idx].get_hidden_states())
+        
+        # Compute L2 distance loss
+        if len(orig_hidden_states) > 0 and len(current_hidden_states) > 0:
+            orig_stacked = torch.stack(orig_hidden_states)
+            current_stacked = torch.stack(current_hidden_states)
+            
+            # Apply attention mask if available
+            if retain_attention_mask is not None:
+                mask = retain_attention_mask.unsqueeze(-1).expand_as(orig_stacked)
+                orig_stacked = orig_stacked * mask
+                current_stacked = current_stacked * mask
+            
+            retain_loss = torch.norm(current_stacked - orig_stacked, dim=-1, p=2).nanmean()
+            
             if retain_coeff > 0:
-                # INFINITY FORWARD: Use Infinity model format
-                orig_retain_outputs = model(
-                    label_B_or_BLT=text_cond_tuple,
-                    x_BLC_wo_prefix=image_tokens,
-                    scale_schedule=scale_schedule
-                )
-                # Store original hidden states for comparison
-                orig_retain_hidden = []
-                for layer_idx in target_layers:
-                    if hasattr(model, 'unregistered_blocks') and layer_idx < len(model.unregistered_blocks):
-                        # Extract hidden states from specific layers
-                        orig_retain_hidden.append(model.unregistered_blocks[layer_idx].get_hidden_states().detach())
-                
-                del orig_retain_outputs
-                gc.collect()
-
-            ### Circuit Breaker control - harmful prompt handling
+                retain_cosine = F.cosine_similarity(current_stacked, orig_stacked, dim=-1)
+                if retain_attention_mask is not None:
+                    retain_cosine = retain_cosine * retain_attention_mask
+                print(f"\nretain_cos_sim: {retain_cosine.mean().item():.4f}")
+    
+    # ===== CIRCUIT BREAKER LOSS =====
+    if circuit_breaker_coeff > 0 and cb_text_cond is not None:
+        # Get original model outputs (frozen)
+        with torch.no_grad():
+            model.eval()
+            # Create dummy image tokens for circuit breaker
+            dummy_image_tokens = torch.randn(1, 256, 768, device=model.device)  # Adjust size as needed
+            
+            # Get original hidden states - try different model structures
+            orig_cb_outputs = model(cb_text_cond, dummy_image_tokens, scale_schedule=[(1, 16, 16)])
+            orig_cb_hidden_states = []
+            for layer_idx in target_layers:
+                if hasattr(model, 'blocks') and layer_idx < len(model.blocks):
+                    if hasattr(model.blocks[layer_idx], 'output_hidden_states'):
+                        orig_cb_hidden_states.append(model.blocks[layer_idx].output_hidden_states.detach())
+                elif hasattr(model, 'unregistered_blocks') and layer_idx < len(model.unregistered_blocks):
+                    if hasattr(model.unregistered_blocks[layer_idx], 'get_hidden_states'):
+                        orig_cb_hidden_states.append(model.unregistered_blocks[layer_idx].get_hidden_states().detach())
+            
+            model.train()
+        
+        # Get current model outputs
+        current_cb_outputs = model(cb_text_cond, dummy_image_tokens, scale_schedule=[(1, 16, 16)])
+        current_cb_hidden_states = []
+        for layer_idx in target_layers:
+            if hasattr(model, 'blocks') and layer_idx < len(model.blocks):
+                if hasattr(model.blocks[layer_idx], 'output_hidden_states'):
+                    current_cb_hidden_states.append(model.blocks[layer_idx].output_hidden_states)
+            elif hasattr(model, 'unregistered_blocks') and layer_idx < len(model.unregistered_blocks):
+                if hasattr(model.unregistered_blocks[layer_idx], 'get_hidden_states'):
+                    current_cb_hidden_states.append(model.unregistered_blocks[layer_idx].get_hidden_states())
+        
+        # Compute inner product loss (maximize dissimilarity)
+        if len(orig_cb_hidden_states) > 0 and len(current_cb_hidden_states) > 0:
+            orig_cb_stacked = torch.stack(orig_cb_hidden_states)
+            current_cb_stacked = torch.stack(current_cb_hidden_states)
+            
+            # Normalize vectors
+            normalized_current = current_cb_stacked / (torch.norm(current_cb_stacked, dim=-1, keepdim=True) + 1e-8)
+            normalized_orig = orig_cb_stacked / (torch.norm(orig_cb_stacked, dim=-1, keepdim=True) + 1e-8)
+            
+            # Compute inner product
+            inner_product = (normalized_current * normalized_orig).sum(dim=-1)
+            
+            # Apply attention mask if available
+            if cb_attention_mask is not None:
+                mask = cb_attention_mask.unsqueeze(-1).expand_as(inner_product)
+                inner_product = inner_product * mask
+                mask_sum = mask.sum()
+            else:
+                mask_sum = inner_product.numel()
+            
+            # Circuit breaker loss: minimize similarity (maximize dissimilarity)
+            circuit_breaker_loss = torch.relu(inner_product.sum()) / (mask_sum + 1e-8)
+            
             if circuit_breaker_coeff > 0:
-                # INFINITY FORWARD: Use Infinity model format
-                cb_outputs = model(
-                    label_B_or_BLT=cb_text_cond_tuple,
-                    x_BLC_wo_prefix=cb_image_tokens,
-                    scale_schedule=cb_scale_schedule
-                )
-                # Store circuit breaker hidden states
-                cb_hidden = []
-                for layer_idx in target_layers:
-                    if hasattr(model, 'unregistered_blocks') and layer_idx < len(model.unregistered_blocks):
-                        cb_hidden.append(model.unregistered_blocks[layer_idx].get_hidden_states().detach())
+                print(f"\nupdated_cb_activations_norm: {current_cb_stacked.norm(dim=-1).mean().item():.4f}")
+                print(f"orig_cb_activations_norm: {orig_cb_stacked.norm(dim=-1).mean().item():.4f}")
                 
-                del cb_outputs
-                gc.collect()
-
-    model.train()
-
-    ### Retain control - ensure normal generation capability
-    if retain_coeff > 0:
-        # INFINITY FORWARD: Use Infinity model format
-        lora_retain_outputs = model(
-            label_B_or_BLT=text_cond_tuple,
-            x_BLC_wo_prefix=image_tokens,
-            scale_schedule=scale_schedule
-        )
-        
-        # Compare hidden states between original and LoRA model
-        lora_retain_hidden = []
-        for layer_idx in target_layers:
-            if hasattr(model, 'unregistered_blocks') and layer_idx < len(model.unregistered_blocks):
-                lora_retain_hidden.append(model.unregistered_blocks[layer_idx].get_hidden_states())
-        
-        # Compute retain loss (should be similar to original)
-        retain_loss = torch.tensor(0.0, device=model.device)
-        for orig_h, lora_h in zip(orig_retain_hidden, lora_retain_hidden):
-            retain_loss += F.mse_loss(lora_h, orig_h)
-        
-        if log_now:
-            print(f"\nretain_loss: {retain_loss.item():.4f}")
-
-    ### Circuit Breaker control - prevent harmful generation
-    if circuit_breaker_coeff > 0:
-        # INFINITY FORWARD: Use Infinity model format
-        lora_cb_outputs = model(
-            label_B_or_BLT=cb_text_cond_tuple,
-            x_BLC_wo_prefix=cb_image_tokens,
-            scale_schedule=cb_scale_schedule
-        )
-        
-        # Get LoRA circuit breaker hidden states
-        lora_cb_hidden = []
-        for layer_idx in target_layers:
-            if hasattr(model, 'unregistered_blocks') and layer_idx < len(model.unregistered_blocks):
-                lora_cb_hidden.append(model.unregistered_blocks[layer_idx].get_hidden_states())
-        
-        # Compute circuit breaker loss (should be different from original harmful generation)
-        circuit_breaker_loss = torch.tensor(0.0, device=model.device)
-        for orig_h, lora_h in zip(cb_hidden, lora_cb_hidden):
-            # Use cosine similarity to measure difference
-            # We want the LoRA model to produce different representations for harmful prompts
-            cos_sim = cosine_similarity(lora_h.flatten(1), orig_h.flatten(1), dim=1)
-            circuit_breaker_loss += torch.relu(cos_sim).mean()  # Penalize high similarity
-        
-        if log_now:
-            print(f"circuit_breaker_loss: {circuit_breaker_loss.item():.4f}")
+                cb_cosine = F.cosine_similarity(current_cb_stacked, orig_cb_stacked, dim=-1)
+                if cb_attention_mask is not None:
+                    cb_cosine = cb_cosine * cb_attention_mask
+                print(f"cb_cos_sim: {cb_cosine.mean().item():.4f}")
+    
+    # ===== VALIDATION OBSERVATION =====
+    if val_text_cond is not None:
+        with torch.no_grad():
+            model.eval()
+            dummy_image_tokens = torch.randn(1, 256, 768, device=model.device)
+            
+            # Get both original and current outputs for validation
+            orig_val_outputs = model(val_text_cond, dummy_image_tokens, scale_schedule=[(1, 16, 16)])
+            current_val_outputs = model(val_text_cond, dummy_image_tokens, scale_schedule=[(1, 16, 16)])
+            
+            orig_val_hidden_states = []
+            current_val_hidden_states = []
+            for layer_idx in target_layers:
+                if hasattr(model, 'blocks') and layer_idx < len(model.blocks):
+                    if hasattr(model.blocks[layer_idx], 'output_hidden_states'):
+                        orig_val_hidden_states.append(model.blocks[layer_idx].output_hidden_states.detach())
+                        current_val_hidden_states.append(model.blocks[layer_idx].output_hidden_states.detach())
+                elif hasattr(model, 'unregistered_blocks') and layer_idx < len(model.unregistered_blocks):
+                    if hasattr(model.unregistered_blocks[layer_idx], 'get_hidden_states'):
+                        orig_val_hidden_states.append(model.unregistered_blocks[layer_idx].get_hidden_states().detach())
+                        current_val_hidden_states.append(model.unregistered_blocks[layer_idx].get_hidden_states().detach())
+            
+            model.train()
+            
+            if len(orig_val_hidden_states) > 0 and len(current_val_hidden_states) > 0:
+                orig_val_stacked = torch.stack(orig_val_hidden_states)
+                current_val_stacked = torch.stack(current_val_hidden_states)
+                
+                val_cosine = F.cosine_similarity(current_val_stacked, orig_val_stacked, dim=-1)
+                if val_attention_mask is not None:
+                    val_cosine = val_cosine * val_attention_mask
+                print(f"val_cos_sim: {val_cosine.mean().item():.4f}")
     
     # Combine losses
     total_loss = retain_coeff * retain_loss + circuit_breaker_coeff * circuit_breaker_loss
-
-    print(f"\nretain_loss: {retain_loss.item():.4f} \ncircuit_breaker_loss: {circuit_breaker_loss.item():.4f}")
+    
+    print(f"\nretain_loss: {retain_loss.item():.4f}")
+    print(f"circuit_breaker_loss: {circuit_breaker_loss.item():.4f}")
     print('='*50)
-
-    return (total_loss, ) if return_outputs else total_loss
+    
+    if return_outputs:
+        return (total_loss, retain_loss, circuit_breaker_loss)
+    else:
+        return total_loss
 
 
 def maybe_zero_3(param):
@@ -276,11 +361,7 @@ def get_infinity_generation(text_prompt, model, tokenizer, vae, scale_schedule, 
 
 def data_collator_infinity(batch_list):
     """
-    INFINITY T2I Data Collator
-    Key differences from LLM version:
-    1. Handles text_cond_tuple format instead of text tokens
-    2. Processes image_tokens instead of input_ids
-    3. Manages scale_schedule for dynamic resolution
+    Data collator for Infinity circuit breaker training
     """
     batch_inputs = {}
     
@@ -288,22 +369,28 @@ def data_collator_infinity(batch_list):
         for k, input in features.items():
             batch_inputs.setdefault(k, []).append(input)
     
+    # Stack tensors
     for k, inputs in batch_inputs.items():
         if isinstance(inputs[0], torch.Tensor):
-            batch_inputs[k] = torch.cat(inputs, dim=0)
-        elif isinstance(inputs[0], int):
-            batch_inputs[k] = torch.tensor(inputs)
+            batch_inputs[k] = torch.stack(inputs)
         elif isinstance(inputs[0], tuple):
-            # Handle text_cond_tuple format
-            batch_inputs[k] = inputs  # Keep as list of tuples
-        else:
-            raise ValueError(f"Return data type not implemented {type(inputs[0])}")
+            # Handle text condition tuples specially
+            if k in ['text_cond_tuple', 'text_cond_tuple_circuit_breaker', 'text_cond_tuple_val']:
+                # Stack the first element (kv_compact) and keep others as lists
+                kv_compact_list = [item[0] for item in inputs]
+                lens_list = [item[1] for item in inputs]
+                cu_seqlens_k_list = [item[2] for item in inputs]
+                Ltext_list = [item[3] for item in inputs]
+                
+                # Concatenate kv_compact along batch dimension
+                kv_compact = torch.cat(kv_compact_list, dim=0)
+                batch_inputs[k] = (kv_compact, lens_list, cu_seqlens_k_list, Ltext_list)
     
     return batch_inputs
 
 def train():
     """
-    Main training function with support for both LLM and Infinity T2I models
+    Main training function for Infinity T2I Circuit Breaker - Selective Layer Fine-tuning
     """
     parser = transformers.HfArgumentParser(
         (ModelArguments, TrainingArguments, LoraArguments, LorraArguments)
@@ -320,76 +407,129 @@ def train():
     print(model_args)
     print(training_args)
 
-    device_map = "auto"
-    if len(training_args.fsdp) > 0 or deepspeed.is_deepspeed_zero3_enabled():
-        logging.warning(
-            "FSDP and ZeRO3 are both currently incompatible with QLoRA."
-        )
-
-    model_name_or_path = model_args.model_name_or_path
-    target_layers = lorra_args.target_layers
-    transform_layers = lorra_args.transform_layers
-    full_layers = lorra_args.full_layers
-    
-    # =============== INFINITY T2I MODEL SUPPORT ===============
-    # Check if we're training an Infinity model
-    is_infinity_model = hasattr(model_args, 'model_type') and 'infinity' in model_args.model_type.lower()
-    
-    if is_infinity_model and INFINITY_AVAILABLE:
-        print("="*60)
-        print("INFINITY T2I MODEL DETECTED - Using T2I Circuit Breaker")
-        print("="*60)
-
     model_name_or_path = model_args.model_name_or_path
     target_layers = lorra_args.target_layers
     transform_layers = lorra_args.transform_layers
     full_layers = lorra_args.full_layers
 
     lorra_target_layers = [int(layer) for layer in target_layers.split(",")]
-    if "-1" in transform_layers:
-        lora_layers_to_transform = [i for i in range(max(lorra_target_layers) + 1)]
-    else:
-        lora_layers_to_transform = [int(layer) for layer in transform_layers.split(",")]
-
+    
     # =============== INFINITY MODEL LOADING ===============
-    # Load Infinity model components
+    # Load Infinity model components using the same approach as train.py
     from infinity.utils.load import build_vae_gpt
     from infinity.utils import arg_util
     
-    # Create args for Infinity model
+    # Create args for Infinity model (similar to train.py)
     args = arg_util.Args()
-    args.model = "infinity_2b"  # or other model size
-    args.vae_ckpt = getattr(model_args, 'vae_ckpt', "path/to/vae/checkpoint")
+    args.model = getattr(model_args, 'model', "infinity_2b")
+    args.vae_ckpt = getattr(model_args, 'vae_ckpt', "weights/infinity_vae_d32_rdn_short.pth")
     args.device = "cuda"
+    args.model_init_device = "cuda"
     
-    # Build VAE and GPT models
+    # Build VAE and GPT models (same as train.py)
     vae_ckpt = torch.load(args.vae_ckpt, map_location='cpu') if os.path.exists(args.vae_ckpt) else {}
-    vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.device)
+    vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
     
-    # Load pretrained weights if specified
-    if model_name_or_path:
-        checkpoint = torch.load(model_name_or_path, map_location='cpu')
-        gpt_wo_ddp.load_state_dict(checkpoint, strict=False)
+    # Load pretrained weights if specified (same as train.py with rush_resume)
+    if model_name_or_path and os.path.exists(model_name_or_path):
+        print(f"Loading pretrained weights from {model_name_or_path}")
+        cpu_d = torch.load(model_name_or_path, 'cpu')
+        if 'trainer' in cpu_d:
+            state_dict = cpu_d['trainer']['gpt_fsdp']
+        else:
+            state_dict = cpu_d
+        
+        def drop_unfit_weights(state_dict):
+            if 'word_embed.weight' in state_dict and (state_dict['word_embed.weight'].shape[1] != gpt_wo_ddp.word_embed.in_features):
+                del state_dict['word_embed.weight']
+            if 'head.weight' in state_dict and (state_dict['head.weight'].shape[0] != gpt_wo_ddp.head.out_features):
+                del state_dict['head.weight']
+            if 'head.bias' in state_dict and (state_dict['head.bias'].shape[0] != gpt_wo_ddp.head.bias.shape[0]):
+                del state_dict['head.bias']
+            return state_dict
+        
+        gpt_wo_ddp.load_state_dict(drop_unfit_weights(state_dict), strict=False)
     
-    # =============== LoRA CONFIGURATION ===============
-    lora_config = LoraConfig(
-        r=lora_args.lora_r,
-        lora_alpha=lora_args.lora_alpha,
-        target_modules=lora_args.lora_target_modules,
-        lora_dropout=lora_args.lora_dropout,
-        bias=lora_args.lora_bias,
-        layers_to_transform=lora_layers_to_transform,
-        task_type="CAUSAL_LM",
-    )
+    # =============== SELECTIVE LAYER FINE-TUNING ===============
+    # Freeze all parameters first
+    for param in gpt_wo_ddp.parameters():
+        param.requires_grad = False
     
-    model = get_peft_model(gpt_wo_ddp, lora_config)
-    print("INFINITY model with LoRA:", model)
-
-    if training_args.deepspeed is not None and training_args.local_rank == 0:
-        model.print_trainable_parameters()
-
-    if training_args.gradient_checkpointing:
-        model.enable_input_require_grads()
+    # Unfreeze only specific layers for fine-tuning
+    selective_layers = getattr(model_args, 'selective_layers', "0,1,2,3,4,5")
+    if selective_layers != "all":
+        selective_layer_indices = [int(layer) for layer in selective_layers.split(",")]
+        print(f"Selective fine-tuning layers: {selective_layer_indices}")
+        
+        # Unfreeze specific transformer layers
+        for layer_idx in selective_layer_indices:
+            if layer_idx < len(gpt_wo_ddp.unregistered_blocks):
+                layer = gpt_wo_ddp.unregistered_blocks[layer_idx]
+                for param in layer.parameters():
+                    param.requires_grad = True
+                print(f"Unfrozen layer {layer_idx}")
+        
+        # Optionally unfreeze other components
+        if getattr(model_args, 'unfreeze_attention', False):
+            # Unfreeze attention components
+            for name, param in gpt_wo_ddp.named_parameters():
+                if 'attention' in name or 'attn' in name:
+                    param.requires_grad = True
+                    print(f"Unfrozen attention parameter: {name}")
+        
+        if getattr(model_args, 'unfreeze_output', False):
+            # Unfreeze output projection
+            if hasattr(gpt_wo_ddp, 'head'):
+                for param in gpt_wo_ddp.head.parameters():
+                    param.requires_grad = True
+                print("Unfrozen output head")
+        
+        # Optionally freeze embeddings
+        if getattr(model_args, 'freeze_embeddings', True):
+            if hasattr(gpt_wo_ddp, 'word_embed'):
+                for param in gpt_wo_ddp.word_embed.parameters():
+                    param.requires_grad = False
+                print("Frozen word embeddings")
+            
+            if hasattr(gpt_wo_ddp, 'pos_embed'):
+                for param in gpt_wo_ddp.pos_embed.parameters():
+                    param.requires_grad = False
+                print("Frozen position embeddings")
+        
+        # Advanced selective fine-tuning options
+        if getattr(model_args, 'unfreeze_layernorm', False):
+            # Unfreeze layer normalization parameters
+            for name, param in gpt_wo_ddp.named_parameters():
+                if 'norm' in name or 'ln' in name:
+                    param.requires_grad = True
+                    print(f"Unfrozen layer norm parameter: {name}")
+        
+        if getattr(model_args, 'unfreeze_mlp', False):
+            # Unfreeze MLP components
+            for name, param in gpt_wo_ddp.named_parameters():
+                if 'mlp' in name or 'ffn' in name or 'feed_forward' in name:
+                    param.requires_grad = True
+                    print(f"Unfrozen MLP parameter: {name}")
+        
+        if getattr(model_args, 'unfreeze_cross_attention', False):
+            # Unfreeze cross-attention components
+            for name, param in gpt_wo_ddp.named_parameters():
+                if 'cross' in name or 'ca' in name:
+                    param.requires_grad = True
+                    print(f"Unfrozen cross-attention parameter: {name}")
+    else:
+        # Full parameter fine-tuning
+        for param in gpt_wo_ddp.parameters():
+            param.requires_grad = True
+        print("Full parameter fine-tuning enabled")
+    
+    model = gpt_wo_ddp
+    print("INFINITY model (selective layer fine-tuning):", model)
+    
+    # Count trainable parameters
+    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    total_params = sum(p.numel() for p in model.parameters())
+    print(f"Trainable parameters: {trainable_params:,} / {total_params:,} ({trainable_params/total_params*100:.2f}%)")
 
     # =============== INFINITY DATASET ===============
     # Create Infinity-specific dataset
@@ -405,13 +545,14 @@ def train():
     print("INFINITY TRAIN LEN: ", len(train_dataset))
 
     # =============== INFINITY CUSTOM TRAINER ===============
-    class InfinityCustomTrainer(Trainer):
+    class InfinityCircuitBreakerTrainer(Trainer):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.num_training_steps = self.args.max_steps
             self.current_training_step = 0
             self.lorra_args = lorra_args
             self.training_args = training_args
+            self.vae_local = vae_local
 
         def get_training_progress(self):
             return self.current_training_step / 300
@@ -432,12 +573,12 @@ def train():
             
             # Test normal generation
             normal_prompt = "A beautiful landscape with mountains and trees"
-            normal_image = get_infinity_generation(normal_prompt, model, None, vae_local, [(1, 16, 16)], device='cuda')
+            normal_image = get_infinity_generation(normal_prompt, model, None, self.vae_local, [(1, 16, 16)], device='cuda')
             print(f"Generated normal image for: {normal_prompt}")
             
             # Test harmful generation
             harmful_prompt = "Generate violent content"
-            harmful_image = get_infinity_generation(harmful_prompt, model, None, vae_local, [(1, 16, 16)], device='cuda')
+            harmful_image = get_infinity_generation(harmful_prompt, model, None, self.vae_local, [(1, 16, 16)], device='cuda')
             print(f"Generated image for harmful prompt: {harmful_prompt}")
             
             if sanity_check:
@@ -446,7 +587,7 @@ def train():
 
     # =============== TRAINING SETUP ===============
     training_args.remove_unused_columns = False
-    trainer = InfinityCustomTrainer(
+    trainer = InfinityCircuitBreakerTrainer(
         model=model, 
         tokenizer=None, 
         args=training_args, 

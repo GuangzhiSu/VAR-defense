@@ -1,0 +1,971 @@
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 546, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 542, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 372, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 98, in build_everything_from_args
+    iters_train, ld_train, ld_val = build_dataloaders(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 357, in build_dataloaders
+    generator=get_generator(),
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 351, in get_generator
+    return torch.Generator().manual_seed(args.seed)
+RuntimeError: manual_seed expected a long, but got NoneType
+
+
+
+
+
+
+
+=======================================================   RESTART [08-12 16:39:45]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 546, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 542, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 372, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 98, in build_everything_from_args
+    iters_train, ld_train, ld_val = build_dataloaders(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 357, in build_dataloaders
+    generator=get_generator(),
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 351, in get_generator
+    return torch.Generator().manual_seed(args.seed)
+RuntimeError: manual_seed expected a long, but got NoneType
+
+
+
+
+
+
+
+=======================================================   RESTART [08-12 16:44:19]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 550, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 546, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 376, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 111, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 160, in build_model_optimizer
+    vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+  File "/home/gs285/VAR/my_model/infinity/utils/load.py", line 36, in build_vae_gpt
+    vae_local = vae_model(vae_st, schedule_mode, codebook_dim, codebook_size, patch_size=patch_size,
+  File "/home/gs285/VAR/my_model/infinity/models/bsq_vae/vae.py", line 251, in vae_model
+    vae, new_state_dict, loaded_keys = load_cnn(vae, state_dict["vae"], prefix="", expand=False)
+  File "/home/gs285/VAR/my_model/infinity/models/bsq_vae/vae.py", line 26, in load_cnn
+    model.state_dict()[_key].copy_(load_weights)
+RuntimeError: The size of tensor a (18) must match the size of tensor b (14) at non-singleton dimension 0
+
+
+
+
+
+
+
+=======================================================   RESTART [08-12 16:47:34]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 550, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 546, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 376, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 111, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 160, in build_model_optimizer
+    vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+  File "/home/gs285/VAR/my_model/infinity/utils/load.py", line 36, in build_vae_gpt
+    vae_local = vae_model(vae_st, schedule_mode, codebook_dim, codebook_size, patch_size=patch_size,
+  File "/home/gs285/VAR/my_model/infinity/models/bsq_vae/vae.py", line 251, in vae_model
+    vae, new_state_dict, loaded_keys = load_cnn(vae, state_dict["vae"], prefix="", expand=False)
+  File "/home/gs285/VAR/my_model/infinity/models/bsq_vae/vae.py", line 26, in load_cnn
+    model.state_dict()[_key].copy_(load_weights)
+RuntimeError: The size of tensor a (18) must match the size of tensor b (14) at non-singleton dimension 0
+
+
+
+
+
+
+
+=======================================================   RESTART [08-12 16:48:05]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 550, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 546, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 376, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 111, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 160, in build_model_optimizer
+    vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+  File "/home/gs285/VAR/my_model/infinity/utils/load.py", line 36, in build_vae_gpt
+    vae_local = vae_model(vae_st, schedule_mode, codebook_dim, codebook_size, patch_size=patch_size,
+  File "/home/gs285/VAR/my_model/infinity/models/bsq_vae/vae.py", line 251, in vae_model
+    vae, new_state_dict, loaded_keys = load_cnn(vae, state_dict["vae"], prefix="", expand=False)
+  File "/home/gs285/VAR/my_model/infinity/models/bsq_vae/vae.py", line 26, in load_cnn
+    model.state_dict()[_key].copy_(load_weights)
+RuntimeError: The size of tensor a (18) must match the size of tensor b (14) at non-singleton dimension 0
+
+
+
+
+
+
+
+=======================================================   RESTART [08-12 16:50:18]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 550, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 546, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 376, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 111, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 160, in build_model_optimizer
+    vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+  File "/home/gs285/VAR/my_model/infinity/utils/load.py", line 43, in build_vae_gpt
+    raise ValueError(f"vae_type {args.vae_type} not supported")
+ValueError: vae_type 14 not supported
+
+
+
+
+
+
+
+=======================================================   RESTART [08-19 09:25:21]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 550, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 546, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 376, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 111, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 160, in build_model_optimizer
+    vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+  File "/home/gs285/VAR/my_model/infinity/utils/load.py", line 36, in build_vae_gpt
+    vae_local = vae_model(vae_st, schedule_mode, codebook_dim, codebook_size, patch_size=patch_size,
+  File "/home/gs285/VAR/my_model/infinity/models/bsq_vae/vae.py", line 251, in vae_model
+    vae, new_state_dict, loaded_keys = load_cnn(vae, state_dict["vae"], prefix="", expand=False)
+  File "/home/gs285/VAR/my_model/infinity/models/bsq_vae/vae.py", line 26, in load_cnn
+    model.state_dict()[_key].copy_(load_weights)
+RuntimeError: The size of tensor a (18) must match the size of tensor b (14) at non-singleton dimension 0
+
+
+
+
+
+
+
+=======================================================   RESTART [08-19 10:18:59]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 550, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 546, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 376, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 111, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 160, in build_model_optimizer
+    vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+  File "/home/gs285/VAR/my_model/infinity/utils/load.py", line 86, in build_vae_gpt
+    gpt_wo_ddp: Infinity = create_model(model_str, **gpt_kw)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/timm/models/_factory.py", line 110, in create_model
+    raise RuntimeError('Unknown model (%s)' % model_name)
+RuntimeError: Unknown model (infinity_8b_weights)
+
+
+
+
+
+
+
+=======================================================   RESTART [08-19 10:24:56]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 550, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 546, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 376, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 111, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 160, in build_model_optimizer
+    vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+  File "/home/gs285/VAR/my_model/infinity/utils/load.py", line 86, in build_vae_gpt
+    gpt_wo_ddp: Infinity = create_model(model_str, **gpt_kw)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/timm/models/_factory.py", line 110, in create_model
+    raise RuntimeError('Unknown model (%s)' % model_name)
+RuntimeError: Unknown model (infinity_infinity_8b)
+
+
+
+
+
+
+
+=======================================================   RESTART [08-19 10:30:18]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 550, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 546, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 376, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 111, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 160, in build_model_optimizer
+    vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+  File "/home/gs285/VAR/my_model/infinity/utils/load.py", line 86, in build_vae_gpt
+    gpt_wo_ddp: Infinity = create_model(model_str, **gpt_kw)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/timm/models/_factory.py", line 110, in create_model
+    raise RuntimeError('Unknown model (%s)' % model_name)
+RuntimeError: Unknown model (infinity_8b)
+
+
+
+
+
+
+
+=======================================================   RESTART [08-19 12:21:04]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 550, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 546, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 376, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 111, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 160, in build_model_optimizer
+    vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+  File "/home/gs285/VAR/my_model/infinity/utils/load.py", line 86, in build_vae_gpt
+    gpt_wo_ddp: Infinity = create_model(model_str, **gpt_kw)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/timm/models/_factory.py", line 114, in create_model
+    model = create_fn(
+  File "/home/gs285/VAR/my_model/infinity/models/infinity.py", line 775, in infinity_8b
+    def infinity_8b(depth=56, embed_dim=3072, num_heads=24, drop_path_rate=0.2, **kwargs): return Infinity(depth=depth, embed_dim=embed_dim, num_heads=num_heads, mlp_ratio=4, drop_path_rate=drop_path_rate, **{k: v for k, v in kwargs.items() if k not in TIMM_KEYS})
+  File "/home/gs285/VAR/my_model/infinity/models/infinity.py", line 251, in __init__
+    self.attn_fn_compile_dict = self.compile_flex_attn()
+  File "/home/gs285/VAR/my_model/infinity/models/infinity.py", line 296, in compile_flex_attn
+    h_div_w_template = h_div_w_templates[np.argmin(np.abs(float(h_div_w) - h_div_w_templates))]
+ValueError: could not convert string to float: '1:1'
+
+
+
+
+
+
+
+=======================================================   RESTART [08-19 12:37:15]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 567, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 563, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 393, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 128, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 254, in build_model_optimizer
+    gpt_ddp: FSDP = FSDP(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py", line 444, in __init__
+    _init_process_group_state(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/distributed/fsdp/_init_utils.py", line 122, in _init_process_group_state
+    process_group if process_group is not None else _get_default_group()
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/distributed/distributed_c10d.py", line 1298, in _get_default_group
+    raise ValueError(
+ValueError: Default process group has not been initialized, please make sure to call init_process_group.
+
+
+
+
+
+
+
+=======================================================   RESTART [08-19 12:49:13]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 572, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 568, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 398, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 128, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 259, in build_model_optimizer
+    gpt_ddp: FSDP = FSDP(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py", line 444, in __init__
+    _init_process_group_state(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/distributed/fsdp/_init_utils.py", line 122, in _init_process_group_state
+    process_group if process_group is not None else _get_default_group()
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/distributed/distributed_c10d.py", line 1298, in _get_default_group
+    raise ValueError(
+ValueError: Default process group has not been initialized, please make sure to call init_process_group.
+
+
+
+
+
+
+
+=======================================================   RESTART [08-19 12:55:41]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 572, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 568, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 398, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 128, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 259, in build_model_optimizer
+    gpt_ddp: FSDP = FSDP(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py", line 444, in __init__
+    _init_process_group_state(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/distributed/fsdp/_init_utils.py", line 122, in _init_process_group_state
+    process_group if process_group is not None else _get_default_group()
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/distributed/distributed_c10d.py", line 1298, in _get_default_group
+    raise ValueError(
+ValueError: Default process group has not been initialized, please make sure to call init_process_group.
+
+
+
+
+
+
+
+=======================================================   RESTART [08-19 12:57:59]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 600, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 596, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 426, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 155, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 287, in build_model_optimizer
+    gpt_ddp: FSDP = FSDP(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py", line 444, in __init__
+    _init_process_group_state(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/distributed/fsdp/_init_utils.py", line 122, in _init_process_group_state
+    process_group if process_group is not None else _get_default_group()
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/distributed/distributed_c10d.py", line 1298, in _get_default_group
+    raise ValueError(
+ValueError: Default process group has not been initialized, please make sure to call init_process_group.
+
+
+
+
+
+
+
+=======================================================   RESTART [08-20 20:08:38]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 600, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 596, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 426, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 155, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 287, in build_model_optimizer
+    gpt_ddp: FSDP = FSDP(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py", line 444, in __init__
+    _init_process_group_state(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/distributed/fsdp/_init_utils.py", line 122, in _init_process_group_state
+    process_group if process_group is not None else _get_default_group()
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/distributed/distributed_c10d.py", line 1298, in _get_default_group
+    raise ValueError(
+ValueError: Default process group has not been initialized, please make sure to call init_process_group.
+
+
+
+
+
+
+
+=======================================================   RESTART [09-01 22:43:42]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_http.py", line 409, in hf_raise_for_status
+    response.raise_for_status()
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/requests/models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 404 Client Error: Not Found for url: https://huggingface.co/weights/flan-t5-xl/resolve/main/tokenizer_config.json
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 476, in cached_files
+    hf_hub_download(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1008, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1115, in _hf_hub_download_to_cache_dir
+    _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1656, in _raise_on_head_call_error
+    raise head_call_error
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1544, in _get_metadata_or_catch_error
+    metadata = get_hf_file_metadata(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1461, in get_hf_file_metadata
+    r = _request_wrapper(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 286, in _request_wrapper
+    response = _request_wrapper(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 310, in _request_wrapper
+    hf_raise_for_status(response)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_http.py", line 459, in hf_raise_for_status
+    raise _format(RepositoryNotFoundError, message, response) from e
+huggingface_hub.errors.RepositoryNotFoundError: 404 Client Error. (Request ID: Root=1-68b5b13b-1cfed43e68f526df1dd90c97;5a1249d2-d0ed-4507-b86e-dd48e484b3a6)
+
+Repository Not Found for url: https://huggingface.co/weights/flan-t5-xl/resolve/main/tokenizer_config.json.
+Please make sure you specified the correct `repo_id` and `repo_type`.
+If you are trying to access a private or gated repo, make sure you are authenticated. For more details, see https://huggingface.co/docs/huggingface_hub/authentication
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 600, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 596, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 426, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 155, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 349, in build_model_optimizer
+    text_tokenizer: T5TokenizerFast = AutoTokenizer.from_pretrained(args.t5_path, revision=None, legacy=True)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/models/auto/tokenization_auto.py", line 1047, in from_pretrained
+    tokenizer_config = get_tokenizer_config(pretrained_model_name_or_path, **kwargs)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/models/auto/tokenization_auto.py", line 879, in get_tokenizer_config
+    resolved_config_file = cached_file(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 318, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 508, in cached_files
+    raise OSError(
+OSError: weights/flan-t5-xl is not a local folder and is not a valid model identifier listed on 'https://huggingface.co/models'
+If this is a private repository, make sure to pass a token having permission to this repo either by logging in with `hf auth login` or by passing `token=<your_token>`
+
+
+
+
+
+
+
+=======================================================   RESTART [09-01 22:47:47]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 476, in cached_files
+    hf_hub_download(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 154, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '/home/gs285/VAR/my_model/weights/flan-t5-xl'. Use `repo_type` argument if needed.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 600, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 596, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 426, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 155, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 349, in build_model_optimizer
+    text_tokenizer: T5TokenizerFast = AutoTokenizer.from_pretrained(args.t5_path, revision=None, legacy=True)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/models/auto/tokenization_auto.py", line 1047, in from_pretrained
+    tokenizer_config = get_tokenizer_config(pretrained_model_name_or_path, **kwargs)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/models/auto/tokenization_auto.py", line 879, in get_tokenizer_config
+    resolved_config_file = cached_file(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 318, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 528, in cached_files
+    resolved_files = [
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 529, in <listcomp>
+    _get_cache_file_to_return(path_or_repo_id, filename, cache_dir, revision, repo_type)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 144, in _get_cache_file_to_return
+    resolved_file = try_to_load_from_cache(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 154, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '/home/gs285/VAR/my_model/weights/flan-t5-xl'. Use `repo_type` argument if needed.
+
+
+
+
+
+
+
+=======================================================   RESTART [09-01 22:56:05]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 476, in cached_files
+    hf_hub_download(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 154, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '/home/gs285/VAR/my_model/weights/flan-t5-xl'. Use `repo_type` argument if needed.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 612, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 608, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 438, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 155, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 350, in build_model_optimizer
+    text_tokenizer: T5TokenizerFast = AutoTokenizer.from_pretrained(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/models/auto/tokenization_auto.py", line 1047, in from_pretrained
+    tokenizer_config = get_tokenizer_config(pretrained_model_name_or_path, **kwargs)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/models/auto/tokenization_auto.py", line 879, in get_tokenizer_config
+    resolved_config_file = cached_file(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 318, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 528, in cached_files
+    resolved_files = [
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 529, in <listcomp>
+    _get_cache_file_to_return(path_or_repo_id, filename, cache_dir, revision, repo_type)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 144, in _get_cache_file_to_return
+    resolved_file = try_to_load_from_cache(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 154, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '/home/gs285/VAR/my_model/weights/flan-t5-xl'. Use `repo_type` argument if needed.
+
+
+
+
+
+
+
+=======================================================   RESTART [09-01 23:01:49]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 476, in cached_files
+    hf_hub_download(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 154, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '/home/gs285/VAR/my_model/weights/flan-t5-xl'. Use `repo_type` argument if needed.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 601, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 597, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 427, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 155, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 350, in build_model_optimizer
+    text_tokenizer: T5TokenizerFast = AutoTokenizer.from_pretrained(args.t5_path, revision=None, legacy=True)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/models/auto/tokenization_auto.py", line 1047, in from_pretrained
+    tokenizer_config = get_tokenizer_config(pretrained_model_name_or_path, **kwargs)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/models/auto/tokenization_auto.py", line 879, in get_tokenizer_config
+    resolved_config_file = cached_file(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 318, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 528, in cached_files
+    resolved_files = [
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 529, in <listcomp>
+    _get_cache_file_to_return(path_or_repo_id, filename, cache_dir, revision, repo_type)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/utils/hub.py", line 144, in _get_cache_file_to_return
+    resolved_file = try_to_load_from_cache(
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 154, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '/home/gs285/VAR/my_model/weights/flan-t5-xl'. Use `repo_type` argument if needed.
+
+
+
+
+
+
+
+=======================================================   RESTART [09-01 23:02:38]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:09<00:09,  9.61s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:09<00:00,  4.81s/it]
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 601, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 597, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 446, in main_train
+    world_size = int(os.environ["WORLD_SIZE"])
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/os.py", line 680, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'WORLD_SIZE'
+
+
+
+
+
+
+
+=======================================================   RESTART [09-01 23:05:56]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:00<00:00,  4.49it/s]Loading checkpoint shards: 100%|##########| 2/2 [00:00<00:00,  8.87it/s]
+
+
+
+
+
+
+
+=======================================================   RESTART [09-01 23:17:49]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:00<00:00,  4.85it/s]Loading checkpoint shards: 100%|##########| 2/2 [00:00<00:00,  9.58it/s]
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 738, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 472, in main_train
+    stats, (sec, remain_time, finish_time) = train_one_ep(
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 604, in train_one_ep
+    for it, data in me.log_every(start_it, iters_train, ld_or_itrt, args.log_freq, args.log_every_iter, header):
+  File "/home/gs285/VAR/my_model/infinity/utils/misc.py", line 263, in log_every
+    obj = next(itrt)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 733, in __next__
+    data = self._next_data()
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1515, in _next_data
+    return self._process_data(data, worker_id)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1550, in _process_data
+    data.reraise()
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/_utils.py", line 750, in reraise
+    raise exception
+AssertionError: Caught AssertionError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 349, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 42, in fetch
+    data = next(self.dataset_iter)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/cb_train_dataset_infinity.py", line 378, in __iter__
+    self.set_global_worker_id()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/cb_train_dataset_infinity.py", line 299, in set_global_worker_id
+    assert worker_total_num == self.dataloader_workers, print(worker_total_num, self.dataloader_workers)
+AssertionError: None
+
+
+
+
+
+
+
+
+=======================================================   RESTART [09-01 23:24:58]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:00<00:00,  4.53it/s]Loading checkpoint shards: 100%|##########| 2/2 [00:00<00:00,  8.95it/s]
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 738, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 472, in main_train
+    stats, (sec, remain_time, finish_time) = train_one_ep(
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 604, in train_one_ep
+    for it, data in me.log_every(start_it, iters_train, ld_or_itrt, args.log_freq, args.log_every_iter, header):
+  File "/home/gs285/VAR/my_model/infinity/utils/misc.py", line 263, in log_every
+    obj = next(itrt)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 733, in __next__
+    data = self._next_data()
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1515, in _next_data
+    return self._process_data(data, worker_id)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1550, in _process_data
+    data.reraise()
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/_utils.py", line 750, in reraise
+    raise exception
+ZeroDivisionError: Caught ZeroDivisionError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 349, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 42, in fetch
+    data = next(self.dataset_iter)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/cb_train_dataset_infinity.py", line 396, in __iter__
+    retain_idx = (batch_idx * self.batch_size + _) % len(self.retain_data)
+ZeroDivisionError: integer division or modulo by zero
+
+
+
+
+
+
+
+
+=======================================================   RESTART [09-01 23:53:57]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 738, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 427, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 155, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 204, in build_model_optimizer
+    vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+  File "/home/gs285/VAR/my_model/infinity/utils/load.py", line 37, in build_vae_gpt
+    encoder_ch_mult=encoder_ch_mult, decoder_ch_mult=decoder_ch_mult, test_mode=True).to(args.device)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1355, in to
+    return self._apply(convert)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
+    module._apply(fn)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
+    module._apply(fn)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
+    module._apply(fn)
+  [Previous line repeated 4 more times]
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 942, in _apply
+    param_applied = fn(param)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1341, in convert
+    return t.to(
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 79.14 GiB of which 6.50 MiB is free. Process 1929404 has 34.20 GiB memory in use. Process 2894169 has 14.77 GiB memory in use. Process 2894293 has 14.77 GiB memory in use. Process 2894661 has 14.77 GiB memory in use. Including non-PyTorch memory, this process has 602.00 MiB memory in use. Of the allocated memory 173.02 MiB is allocated by PyTorch, and 14.98 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+
+
+
+
+
+
+=======================================================   RESTART [09-01 23:54:40]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:00<00:00,  4.68it/s]Loading checkpoint shards: 100%|##########| 2/2 [00:00<00:00,  9.25it/s]
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 738, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 427, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 155, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 353, in build_model_optimizer
+    text_encoder.to(args.device)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4278, in to
+    return super().to(*args, **kwargs)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1355, in to
+    return self._apply(convert)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
+    module._apply(fn)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
+    module._apply(fn)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
+    module._apply(fn)
+  [Previous line repeated 4 more times]
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 942, in _apply
+    param_applied = fn(param)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1341, in convert
+    return t.to(
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 40.00 MiB. GPU 0 has a total capacity of 79.14 GiB of which 31.62 MiB is free. Process 1209003 has 31.00 GiB memory in use. Process 2884535 has 14.77 GiB memory in use. Including non-PyTorch memory, this process has 33.31 GiB memory in use. Of the allocated memory 32.77 GiB is allocated by PyTorch, and 65.77 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+
+
+
+
+
+
+=======================================================   RESTART [09-02 00:00:22]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:00<00:00,  4.65it/s]Loading checkpoint shards: 100%|##########| 2/2 [00:00<00:00,  9.19it/s]
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 738, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 427, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 155, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 353, in build_model_optimizer
+    text_encoder.to(args.device)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4278, in to
+    return super().to(*args, **kwargs)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1355, in to
+    return self._apply(convert)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
+    module._apply(fn)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
+    module._apply(fn)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
+    module._apply(fn)
+  [Previous line repeated 4 more times]
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 942, in _apply
+    param_applied = fn(param)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1341, in convert
+    return t.to(
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 40.00 MiB. GPU 0 has a total capacity of 79.14 GiB of which 31.62 MiB is free. Process 1209003 has 31.00 GiB memory in use. Process 2884535 has 14.77 GiB memory in use. Including non-PyTorch memory, this process has 33.31 GiB memory in use. Of the allocated memory 32.77 GiB is allocated by PyTorch, and 65.77 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+
+
+
+
+
+
+=======================================================   RESTART [09-06 23:26:11]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:09<00:09,  9.32s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:09<00:00,  4.66s/it]
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 738, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 472, in main_train
+    stats, (sec, remain_time, finish_time) = train_one_ep(
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 676, in train_one_ep
+    grad_norm_t, scale_log2_t = trainer.train_step(
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/trainer.py", line 180, in train_step
+    x_BLC_wo_prefix, gt_ms_idx_Bl = self.bitwise_self_correction.flip_requant(vae_scale_schedule, inp_B3HW, raw_features, device)
+  File "/home/gs285/VAR/my_model/infinity/models/bitwise_self_correction.py", line 44, in flip_requant
+    residual = codes_out - cum_var_input
+RuntimeError: The size of tensor a (64) must match the size of tensor b (32) at non-singleton dimension 4
+
+
+
+
+
+
+
+=======================================================   RESTART [09-06 23:44:41]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:00<00:00,  4.80it/s]Loading checkpoint shards: 100%|##########| 2/2 [00:00<00:00,  9.50it/s]
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 738, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 472, in main_train
+    stats, (sec, remain_time, finish_time) = train_one_ep(
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 676, in train_one_ep
+    grad_norm_t, scale_log2_t = trainer.train_step(
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/trainer.py", line 180, in train_step
+    x_BLC_wo_prefix, gt_ms_idx_Bl = self.bitwise_self_correction.flip_requant(vae_scale_schedule, inp_B3HW, raw_features, device)
+  File "/home/gs285/VAR/my_model/infinity/models/bitwise_self_correction.py", line 47, in flip_requant
+    residual = codes_out - cum_var_input
+RuntimeError: The size of tensor a (64) must match the size of tensor b (32) at non-singleton dimension 4
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 00:05:36]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:00<00:00,  4.87it/s]Loading checkpoint shards: 100%|##########| 2/2 [00:00<00:00,  9.61it/s]
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 743, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 739, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 472, in main_train
+    stats, (sec, remain_time, finish_time) = train_one_ep(
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 676, in train_one_ep
+    grad_norm_t, scale_log2_t = trainer.train_step(
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/trainer.py", line 183, in train_step
+    x_BLC_wo_prefix, gt_ms_idx_Bl = self.bitwise_self_correction.flip_requant(vae_scale_schedule, inp_B3HW, raw_features, device)
+  File "/home/gs285/VAR/my_model/infinity/models/bitwise_self_correction.py", line 47, in flip_requant
+    residual = codes_out - cum_var_input
+RuntimeError: The size of tensor a (64) must match the size of tensor b (32) at non-singleton dimension 4
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 00:07:42]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:00<00:00,  4.52it/s]Loading checkpoint shards: 100%|##########| 2/2 [00:00<00:00,  8.91it/s]
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 738, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 472, in main_train
+    stats, (sec, remain_time, finish_time) = train_one_ep(
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 676, in train_one_ep
+    grad_norm_t, scale_log2_t = trainer.train_step(
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/trainer.py", line 180, in train_step
+    x_BLC_wo_prefix, gt_ms_idx_Bl = self.bitwise_self_correction.flip_requant(vae_scale_schedule, inp_B3HW, raw_features, device)
+  File "/home/gs285/VAR/my_model/infinity/models/bitwise_self_correction.py", line 47, in flip_requant
+    codes_out = F.interpolate(codes_out, size=(target_h, target_w), mode='bilinear', align_corners=False)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/functional.py", line 4566, in interpolate
+    raise ValueError(
+ValueError: Input and output must have the same number of spatial dimensions, but got input with spatial dimensions of [1, 64, 64] and output size of (32, 32). Please provide input tensor in (N, C, d1, d2, ...,dK) format and output size in (o1, o2, ...,oK) format.
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 00:11:03]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:00<00:00,  4.96it/s]Loading checkpoint shards: 100%|##########| 2/2 [00:00<00:00,  9.76it/s]
+/home/gs285/VAR/my_model/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR/my_model/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 738, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 472, in main_train
+    stats, (sec, remain_time, finish_time) = train_one_ep(
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 676, in train_one_ep
+    grad_norm_t, scale_log2_t = trainer.train_step(
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/trainer.py", line 209, in train_step
+    last_scale_area = np.sqrt(scale_schedule[-1].prod())
+AttributeError: 'tuple' object has no attribute 'prod'
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 10:27:14]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+    main()
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 738, in main
+    main_train(args)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 427, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 155, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 204, in build_model_optimizer
+    vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+  File "/home/gs285/VAR/my_model/infinity/utils/load.py", line 91, in build_vae_gpt
+    gpt_wo_ddp = gpt_wo_ddp.to(device)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1355, in to
+    return self._apply(convert)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
+    module._apply(fn)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
+    module._apply(fn)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
+    module._apply(fn)
+  [Previous line repeated 1 more time]
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 942, in _apply
+    param_applied = fn(param)
+  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1341, in convert
+    return t.to(
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 144.00 MiB. GPU 0 has a total capacity of 79.14 GiB of which 89.19 MiB is free. Process 2972736 has 49.37 GiB memory in use. Including non-PyTorch memory, this process has 29.66 GiB memory in use. Of the allocated memory 29.15 GiB is allocated by PyTorch, and 37.19 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

@@ -1,33 +1,0 @@
-Starting Harmfulness Probe...
-[Loading tokenizer and text encoder]
-[Loading tokenizer and text encoder]
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  2.76it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  5.47it/s]
-Traceback (most recent call last):
-  File "/home/gs285/VAR/my_model/harmfulness_probe/harmfulness_probe.py", line 583, in <module>
-    main()
-  File "/home/gs285/VAR/my_model/harmfulness_probe/harmfulness_probe.py", line 529, in main
-    model, vae, text_tokenizer, text_encoder, tokenizer, device = load_models(args)
-  File "/home/gs285/VAR/my_model/harmfulness_probe/harmfulness_probe.py", line 89, in load_models
-    vae = load_visual_tokenizer(args)
-  File "/home/gs285/VAR/my_model/run_infinity.py", line 274, in load_visual_tokenizer
-    encoder_ch_mult=encoder_ch_mult, decoder_ch_mult=decoder_ch_mult, test_mode=True).to(device)
-  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1355, in to
-    return self._apply(convert)
-  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
-    module._apply(fn)
-  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
-    module._apply(fn)
-  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
-    module._apply(fn)
-  [Previous line repeated 4 more times]
-  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 942, in _apply
-    param_applied = fn(param)
-  File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1341, in convert
-    return t.to(
-KeyboardInterrupt
-/home/gs285/VAR/my_model/Drag-and-Drop-LLMs/scripts/common_sense_reasoning/ARC-c/training_and_generation.sh: line 1: cd: ./workspace/main: No such file or directory
-bash: launch_multi.sh: No such file or directory
-python: can't open file '/home/gs285/VAR/my_model/generate/qwen0.5lora_generation_common_sense_reasoning.py': [Errno 2] No such file or directory
-python: can't open file '/home/gs285/VAR/my_model/generate/qwen0.5lora_generation_common_sense_reasoning.py': [Errno 2] No such file or directory
-python: can't open file '/home/gs285/VAR/my_model/generate/qwen0.5lora_generation_common_sense_reasoning.py': [Errno 2] No such file or directory
-python: can't open file '/home/gs285/VAR/my_model/generate/qwen0.5lora_generation_common_sense_reasoning.py': [Errno 2] No such file or directory

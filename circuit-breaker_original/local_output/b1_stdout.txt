@@ -1,0 +1,112 @@
+[08-12 11:25:42] (inity_circuit_breaker.py, line 512)=> ============================================================
+[08-12 11:25:42] (inity_circuit_breaker.py, line 513)=> INFINITY CIRCUIT BREAKER TRAINING - SELECTIVE LAYER FINE-TUNING
+[08-12 11:25:42] (inity_circuit_breaker.py, line 514)=> Circuit Breaker Alpha: 0.1
+[08-12 11:25:42] (inity_circuit_breaker.py, line 515)=> Circuit Breaker Target Layers: 0,1,2,3,4,5
+[08-12 11:25:42] (inity_circuit_breaker.py, line 516)=> Circuit Breaker Enabled: True
+[08-12 11:25:42] (inity_circuit_breaker.py, line 517)=> Number of Examples: 1000
+[08-12 11:25:42] (inity_circuit_breaker.py, line 518)=> Model Name/Path: t5-base
+[08-12 11:25:42] (inity_circuit_breaker.py, line 519)=> Harmful Prompts Path: None
+[08-12 11:25:42] (inity_circuit_breaker.py, line 520)=> Sanitized Prompts Path: None
+[08-12 11:25:42] (inity_circuit_breaker.py, line 521)=> Validation Ratio: 0.1
+[08-12 11:25:42] (inity_circuit_breaker.py, line 522)=> Category: None
+[08-12 11:25:42] (inity_circuit_breaker.py, line 523)=> Batch Size: 0
+[08-12 11:25:42] (inity_circuit_breaker.py, line 524)=> Workers: 0
+[08-12 11:25:42] (inity_circuit_breaker.py, line 525)=> Device: cuda:0
+[08-12 11:25:42] (inity_circuit_breaker.py, line 526)=> Model: infinity_/home/gs285/VAR/my_model/weights/infinity_8b_weights
+[08-12 11:25:42] (inity_circuit_breaker.py, line 527)=> VAE Checkpoint: /home/gs285/VAR/my_model/weights/infinity_vae_d56_f8_14_patchify.pth
+[08-12 11:25:42] (inity_circuit_breaker.py, line 528)=> Rush Resume: 
+[08-12 11:25:42] (inity_circuit_breaker.py, line 529)=> Selective Layers: 0,1,2,3,4,5
+[08-12 11:25:42] (inity_circuit_breaker.py, line 530)=> ============================================================
+[08-12 11:25:42] (rain_dataset_infinity.py, line 123)=> category not found
+[08-12 11:25:42] (rain_dataset_infinity.py, line 201)=> category not found
+[08-12 11:25:43] (rain_dataset_infinity.py, line  84)=> Loaded 0 retain examples
+[08-12 11:25:43] (rain_dataset_infinity.py, line  85)=> Loaded 0 circuit breaker examples
+[08-12 11:25:43] (rain_dataset_infinity.py, line  86)=> Loaded 0 validation examples
+[08-12 11:25:43] (rain_dataset_infinity.py, line  87)=> num_replicas: 1, rank: 0, dataloader_workers: 2, seed:0
+[08-12 11:25:43] (inity_circuit_breaker.py, line 334)=> args.batch_size=0, vbs=0
+
+
+
+
+
+
+
+=======================================================   RESTART [08-12 11:55:47]   =======================================================
+[08-12 11:55:47] (inity_circuit_breaker.py, line 522)=> ============================================================
+[08-12 11:55:47] (inity_circuit_breaker.py, line 523)=> INFINITY CIRCUIT BREAKER TRAINING - SELECTIVE LAYER FINE-TUNING
+[08-12 11:55:47] (inity_circuit_breaker.py, line 524)=> Circuit Breaker Alpha: 0.1
+[08-12 11:55:47] (inity_circuit_breaker.py, line 525)=> Circuit Breaker Target Layers: 0,1,2,3,4,5
+[08-12 11:55:47] (inity_circuit_breaker.py, line 526)=> Circuit Breaker Enabled: True
+[08-12 11:55:47] (inity_circuit_breaker.py, line 527)=> Number of Examples: 1000
+[08-12 11:55:47] (inity_circuit_breaker.py, line 528)=> Model Name/Path: t5-base
+[08-12 11:55:47] (inity_circuit_breaker.py, line 529)=> Harmful Prompts Path: /home/gs285/VAR/my_model/prompt_generation/output/harmful_prompts
+[08-12 11:55:47] (inity_circuit_breaker.py, line 530)=> Sanitized Prompts Path: /home/gs285/VAR/my_model/prompt_generation/output/sanitized_prompts
+[08-12 11:55:47] (inity_circuit_breaker.py, line 531)=> Validation Ratio: 0.1
+[08-12 11:55:47] (inity_circuit_breaker.py, line 532)=> Category: hate
+[08-12 11:55:47] (inity_circuit_breaker.py, line 533)=> Batch Size: 8
+[08-12 11:55:47] (inity_circuit_breaker.py, line 534)=> Workers: 4
+[08-12 11:55:47] (inity_circuit_breaker.py, line 535)=> Device: cuda:0
+[08-12 11:55:47] (inity_circuit_breaker.py, line 536)=> Model: infinity_/home/gs285/VAR/my_model/weights/infinity_8b_weights
+[08-12 11:55:47] (inity_circuit_breaker.py, line 537)=> VAE Checkpoint: /home/gs285/VAR/my_model/weights/infinity_vae_d56_f8_14_patchify.pth
+[08-12 11:55:47] (inity_circuit_breaker.py, line 538)=> Rush Resume: 
+[08-12 11:55:47] (inity_circuit_breaker.py, line 539)=> Selective Layers: 0,1,2,3,4,5
+[08-12 11:55:47] (inity_circuit_breaker.py, line 540)=> ============================================================
+[08-12 11:55:47] (inity_circuit_breaker.py, line 326)=> Using data paths: harmful=/home/gs285/VAR/my_model/prompt_generation/output/harmful_prompts, sanitized=/home/gs285/VAR/my_model/prompt_generation/output/sanitized_prompts, category=hate
+[08-12 11:55:47] (rain_dataset_infinity.py, line 131)=> Found sanitized prompts file: /home/gs285/VAR/my_model/prompt_generation/output/sanitized_prompts/hate_sanitized_prompts.json
+[08-12 11:55:47] (rain_dataset_infinity.py, line 140)=> Loading sanitized prompts from /home/gs285/VAR/my_model/prompt_generation/output/sanitized_prompts/hate_sanitized_prompts.json
+[08-12 11:55:47] (rain_dataset_infinity.py, line 193)=> Split 0 prompts: 0 retain, 0 validation
+[08-12 11:55:47] (rain_dataset_infinity.py, line 224)=> Found harmful prompts file: /home/gs285/VAR/my_model/prompt_generation/output/harmful_prompts/hate_prompts.json
+[08-12 11:55:47] (rain_dataset_infinity.py, line 233)=> Loading harmful prompts from /home/gs285/VAR/my_model/prompt_generation/output/harmful_prompts/hate_prompts.json
+[08-12 11:55:48] (rain_dataset_infinity.py, line  84)=> Loaded 0 retain examples
+[08-12 11:55:48] (rain_dataset_infinity.py, line  85)=> Loaded 1000 circuit breaker examples
+[08-12 11:55:48] (rain_dataset_infinity.py, line  86)=> Loaded 0 validation examples
+[08-12 11:55:48] (rain_dataset_infinity.py, line  87)=> num_replicas: 1, rank: 0, dataloader_workers: 2, seed:0
+[08-12 11:55:48] (inity_circuit_breaker.py, line 344)=> args.batch_size=8, vbs=12
+[08-12 11:55:48] (inity_circuit_breaker.py, line 363)=> len(dataloader): 100, len(dataset): 100
+[08-12 11:55:48] (inity_circuit_breaker.py, line 365)=> total_samples: 200
+[08-12 11:55:48] (inity_circuit_breaker.py, line 366)=> [dataloader] batch_size=8, iters_train=100, type(train_set)=InfinityCircuitBreakerDataset
+[08-12 11:55:48] (inity_circuit_breaker.py, line 100)=> train_h_div_w_list=['1:1', '4:3', '3:4', '16:9', '9:16']
+[08-12 11:55:48] (inity_circuit_breaker.py, line 104)=> Load vae form /home/gs285/VAR/my_model/weights/infinity_vae_d56_f8_14_patchify.pth
+
+
+
+
+
+
+
+=======================================================   RESTART [08-12 12:00:09]   =======================================================
+[08-12 12:00:09] (inity_circuit_breaker.py, line 522)=> ============================================================
+[08-12 12:00:09] (inity_circuit_breaker.py, line 523)=> INFINITY CIRCUIT BREAKER TRAINING - SELECTIVE LAYER FINE-TUNING
+[08-12 12:00:09] (inity_circuit_breaker.py, line 524)=> Circuit Breaker Alpha: 0.1
+[08-12 12:00:09] (inity_circuit_breaker.py, line 525)=> Circuit Breaker Target Layers: 0,1,2,3,4,5
+[08-12 12:00:09] (inity_circuit_breaker.py, line 526)=> Circuit Breaker Enabled: True
+[08-12 12:00:09] (inity_circuit_breaker.py, line 527)=> Number of Examples: 1000
+[08-12 12:00:09] (inity_circuit_breaker.py, line 528)=> Model Name/Path: t5-base
+[08-12 12:00:09] (inity_circuit_breaker.py, line 529)=> Harmful Prompts Path: /home/gs285/VAR/my_model/prompt_generation/output/harmful_prompts
+[08-12 12:00:09] (inity_circuit_breaker.py, line 530)=> Sanitized Prompts Path: /home/gs285/VAR/my_model/prompt_generation/output/sanitized_prompts
+[08-12 12:00:09] (inity_circuit_breaker.py, line 531)=> Validation Ratio: 0.1
+[08-12 12:00:09] (inity_circuit_breaker.py, line 532)=> Category: hate
+[08-12 12:00:09] (inity_circuit_breaker.py, line 533)=> Batch Size: 8
+[08-12 12:00:09] (inity_circuit_breaker.py, line 534)=> Workers: 4
+[08-12 12:00:09] (inity_circuit_breaker.py, line 535)=> Device: cuda:0
+[08-12 12:00:09] (inity_circuit_breaker.py, line 536)=> Model: infinity_/home/gs285/VAR/my_model/weights/infinity_8b_weights
+[08-12 12:00:09] (inity_circuit_breaker.py, line 537)=> VAE Checkpoint: /home/gs285/VAR/my_model/weights/infinity_vae_d56_f8_14_patchify.pth
+[08-12 12:00:09] (inity_circuit_breaker.py, line 538)=> Rush Resume: 
+[08-12 12:00:09] (inity_circuit_breaker.py, line 539)=> Selective Layers: 0,1,2,3,4,5
+[08-12 12:00:09] (inity_circuit_breaker.py, line 540)=> ============================================================
+[08-12 12:00:09] (inity_circuit_breaker.py, line 326)=> Using data paths: harmful=/home/gs285/VAR/my_model/prompt_generation/output/harmful_prompts, sanitized=/home/gs285/VAR/my_model/prompt_generation/output/sanitized_prompts, category=hate
+[08-12 12:00:09] (rain_dataset_infinity.py, line 131)=> Found sanitized prompts file: /home/gs285/VAR/my_model/prompt_generation/output/sanitized_prompts/hate_sanitized_prompts.json
+[08-12 12:00:09] (rain_dataset_infinity.py, line 140)=> Loading sanitized prompts from /home/gs285/VAR/my_model/prompt_generation/output/sanitized_prompts/hate_sanitized_prompts.json
+[08-12 12:00:09] (rain_dataset_infinity.py, line 193)=> Split 0 prompts: 0 retain, 0 validation
+[08-12 12:00:09] (rain_dataset_infinity.py, line 224)=> Found harmful prompts file: /home/gs285/VAR/my_model/prompt_generation/output/harmful_prompts/hate_prompts.json
+[08-12 12:00:09] (rain_dataset_infinity.py, line 233)=> Loading harmful prompts from /home/gs285/VAR/my_model/prompt_generation/output/harmful_prompts/hate_prompts.json
+[08-12 12:00:10] (rain_dataset_infinity.py, line  84)=> Loaded 0 retain examples
+[08-12 12:00:10] (rain_dataset_infinity.py, line  85)=> Loaded 1000 circuit breaker examples
+[08-12 12:00:10] (rain_dataset_infinity.py, line  86)=> Loaded 0 validation examples
+[08-12 12:00:10] (rain_dataset_infinity.py, line  87)=> num_replicas: 1, rank: 0, dataloader_workers: 2, seed:0
+[08-12 12:00:10] (inity_circuit_breaker.py, line 344)=> args.batch_size=8, vbs=12
+[08-12 12:00:10] (inity_circuit_breaker.py, line 363)=> len(dataloader): 100, len(dataset): 100
+[08-12 12:00:10] (inity_circuit_breaker.py, line 365)=> total_samples: 200
+[08-12 12:00:10] (inity_circuit_breaker.py, line 366)=> [dataloader] batch_size=8, iters_train=100, type(train_set)=InfinityCircuitBreakerDataset
+[08-12 12:00:10] (inity_circuit_breaker.py, line 100)=> train_h_div_w_list=['1:1', '4:3', '3:4', '16:9', '9:16']
+[08-12 12:00:10] (inity_circuit_breaker.py, line 104)=> Load vae form /home/gs285/VAR/my_model/weights/infinity_vae_d56_f8_14_patchify.pth

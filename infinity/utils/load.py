@@ -20,7 +20,7 @@ from infinity.utils.misc import os_system
 
 
 def build_vae_gpt(args: arg_util.Args, vae_st: dict, skip_gpt: bool, force_flash=False, device='cuda'):
-    if args.vae_type in [8,16,18,20,24,32,64,128]:
+    if args.vae_type in [8,14,16,18,20,24,32,64,128]:
         from infinity.models.bsq_vae.vae import vae_model
         schedule_mode = "dynamic"
         codebook_dim = args.vae_type # 18
