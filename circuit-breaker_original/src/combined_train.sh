@@ -53,7 +53,7 @@ bed_path=checkpoints/${exp_name}/
 data_path='data/infinity_toy_data/splits'
 local_out_path=$LOCAL_OUT/${exp_name}
 
-PRETRAINED_MODEL_PATH="/home/gs285/VAR/my_model/weights/infinity_8b_weights"
+PRETRAINED_MODEL_PATH="/home/gs285/VAR-defense/weights/infinity_2b_reg.pth"
 
 rm -rf ${bed_path}
 rm -rf ${local_out_path}
@@ -96,7 +96,7 @@ train.py \
 --Ct5=2048 \
 --t5_path=weights/flan-t5-xl \
 --vae_type 32 \
---vae_ckpt=weights/infinity_vae_d32_rdn_short.pth  \
+--vae_ckpt=/home/gs285/VAR-defense/weights/infinity_vae_d32.pth  \
 --wp 0.00000001 \
 --wpe=1 \
 --dynamic_resolution_across_gpus 1 \

@@ -26,12 +26,13 @@ from torch.profiler import record_function
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer, T5EncoderModel, T5TokenizerFast
 import torch.distributed as tdist
+import wandb
 
 # Add circuit breaker imports
 sys.path.append('../circuit-breaker_original/src')
 from lorra_circuit_breaker_new import compute_infinity_circuit_breaker_loss, data_collator_infinity
 
-sys.path.append('/home/gs285/VAR/my_model')
+sys.path.append('/home/gs285/VAR-defense/')
 import infinity.utils.dist as dist
 from infinity.utils.save_and_load import CKPTSaver, auto_resume
 from infinity.utils import arg_util, misc, wandb_utils
@@ -44,6 +45,20 @@ enable_timeline_sdk = False
 
 # Global variable for speed tracking
 g_speed_ls = deque(maxlen=128)
+
+
+def _rk():
+    try:
+        return dist.get_rank()
+    except Exception:
+        return 0
+
+
+def dbg_print(tag: str, msg: str):
+    try:
+        print(f"[rk{_rk():02d}] {tag}: {msg}", flush=True)
+    except Exception:
+        pass
 
 
 def setup_circuit_breaker_specific_args(args):
@@ -64,11 +79,21 @@ def setup_circuit_breaker_specific_args(args):
     if not hasattr(args, 'circuit_breaker_alpha'):
         args.circuit_breaker_alpha = 0.1
     if not hasattr(args, 'circuit_breaker_target_layers'):
-        args.circuit_breaker_target_layers = "0,1,2,3,4,5"
+        if hasattr(args, 'target_layers') and args.target_layers:
+            # Convert list to string format
+            if isinstance(args.target_layers, list):
+                args.circuit_breaker_target_layers = ",".join(map(str, args.target_layers))
+            else:
+                args.circuit_breaker_target_layers = str(args.target_layers)
+        else:
+            args.circuit_breaker_target_layers = "0,1,2,3,4,5"
     if not hasattr(args, 'circuit_breaker_enabled'):
         args.circuit_breaker_enabled = True
     if not hasattr(args, 'selective_layers'):
         args.selective_layers = "0,1,2,3,4,5"
+    # When True, we will freeze all layers except those listed in `selective_layers`
+    if not hasattr(args, 'freeze_to_selective_layers'):
+        args.freeze_to_selective_layers = False
     if not hasattr(args, 'unfreeze_attention'):
         args.unfreeze_attention = False
     if not hasattr(args, 'unfreeze_output'):
@@ -81,6 +106,11 @@ def setup_circuit_breaker_specific_args(args):
         args.unfreeze_mlp = False
     if not hasattr(args, 'unfreeze_cross_attention'):
         args.unfreeze_cross_attention = False
+    # Scaling of retain/circuit-breaker penalties (align with LORRA)
+    if not hasattr(args, 'lorra_alpha'):
+        args.lorra_alpha = 1.0
+    if not hasattr(args, 'coeff_schedule'):
+        args.coeff_schedule = 'linear_converge'
     
     return args
 
@@ -103,26 +133,28 @@ def _to_ratio(x):
     return float(s)
 
 def setup_dist_if_needed(args):
-    from datetime import timedelta
     # 若用户单卡运行且没用 torchrun，则不给分布式初始化，走单机逻辑
     if "RANK" not in os.environ and "LOCAL_RANK" not in os.environ:
-        args.rank = 0
-        args.world_size = 1
-        args.local_rank = 0
+        # 设置单卡训练参数
+        setattr(args, 'rank', 0)
+        setattr(args, 'world_size', 1)
+        setattr(args, 'local_rank', 0)
         # 单卡也设置当前 device，保持后续代码统一
         if torch.cuda.is_available():
             torch.cuda.set_device(args.device if isinstance(args.device, int) else getattr(args.device, "index", 0))
         return
 
     # 分布式初始化（torchrun 会提供环境变量）
-    if not dist.is_initialized():
-        dist.init_process_group(
-            backend="nccl",
-            timeout=timedelta(minutes=30)
+    if not dist.initialized():
+        dist.init_distributed_mode(
+            local_out_path=args.local_out_path,
+            fork=False,
+            timeout_minutes=30
         )
-        args.rank = dist.get_rank()
-        args.world_size = dist.get_world_size()
-        args.local_rank = int(os.environ.get("LOCAL_RANK", 0))
+        # 设置分布式训练参数
+        setattr(args, 'rank', dist.get_rank())
+        setattr(args, 'world_size', dist.get_world_size())
+        setattr(args, 'local_rank', int(os.environ.get("LOCAL_RANK", 0)))
         torch.cuda.set_device(args.local_rank)
 
 def build_everything_from_args(args: arg_util.Args, saver):
@@ -208,6 +240,59 @@ def build_model_optimizer(args, vae_ckpt):
     init_weights(gpt_wo_ddp, other_std=args.tini)
     gpt_wo_ddp.special_init(aln_init=args.aln, aln_gamma_init=args.alng, scale_head=args.hd0, scale_proj=args.diva)
 
+    # ===================== Selective-layer finetuning (freeze others) =====================
+    def _parse_selective_layers(spec: str, max_depth: int):
+        # Accept formats like "25-29" or "10,12,14" or mixed "1-3,6,8-9"
+        idx_set = set()
+        if spec is None:
+            return idx_set
+        for part in str(spec).split(','):
+            part = part.strip()
+            if not part:
+                continue
+            if '-' in part:
+                a, b = part.split('-', 1)
+                try:
+                    lo, hi = int(a), int(b)
+                except Exception:
+                    continue
+                if lo > hi:
+                    lo, hi = hi, lo
+                for i in range(lo, hi + 1):
+                    if 0 <= i < max_depth:
+                        idx_set.add(i)
+            else:
+                try:
+                    i = int(part)
+                except Exception:
+                    continue
+                if 0 <= i < max_depth:
+                    idx_set.add(i)
+        return sorted(idx_set)
+
+    if getattr(args, 'freeze_to_selective_layers', False):
+        depth = len(getattr(gpt_wo_ddp, 'unregistered_blocks', []))
+        target_layer_indices = _parse_selective_layers(getattr(args, 'selective_layers', None), depth)
+
+        # Freeze all parameters first
+        for p in gpt_wo_ddp.parameters():
+            p.requires_grad = False
+
+        # Unfreeze only selected transformer blocks
+        for idx in target_layer_indices:
+            block = gpt_wo_ddp.unregistered_blocks[idx]
+            for p in block.parameters():
+                p.requires_grad = True
+
+        # Optional: keep LayerNorms trainable if requested (aligns with common fine-tune practice)
+        if getattr(args, 'unfreeze_layernorm', False):
+            for m in gpt_wo_ddp.modules():
+                if isinstance(m, torch.nn.LayerNorm):
+                    for p in m.parameters():
+                        p.requires_grad = True
+
+        print(f"[Selective Finetune] depth={depth}, trainable_blocks={target_layer_indices}")
+
     if args.rush_resume:
         print(f"{args.rush_resume=}")
         cpu_d = torch.load(args.rush_resume, 'cpu')
@@ -272,7 +357,7 @@ def build_model_optimizer(args, vae_ckpt):
         
         if args.enable_hybrid_shard:
             sharding_strategy = ShardingStrategy.HYBRID_SHARD if args.zero == 3 else ShardingStrategy._HYBRID_SHARD_ZERO2
-            assert dist.is_initialized()
+            assert dist.initialized()
             # Ensure distributed environment is ready
             dist.barrier()
             world_size = dist.get_world_size()
@@ -376,6 +461,10 @@ def build_dataloaders(args):
     
     print(f"Using data paths: harmful={args.harmful_prompts_path}, sanitized={args.sanitized_prompts_path}, category={args.category}")
     
+    # Determine distributed context for dataset sharding
+    ds_world_size = dist.get_world_size() if dist.initialized() else 1
+    ds_rank = dist.get_rank() if dist.initialized() else 0
+
     dataset_train = build_circuit_breaker_dataset(
         args=args,
         data_path=args.data_path if hasattr(args, 'data_path') else './data',
@@ -386,7 +475,11 @@ def build_dataloaders(args):
         harmful_prompts_path=args.harmful_prompts_path,
         sanitized_prompts_path=args.sanitized_prompts_path,
         validation_ratio=args.validation_ratio,
-        category=args.category
+        category=args.category,
+        # pass DDP/FSDP info to iterable dataset to avoid cross-rank collisions
+        num_replicas=ds_world_size,
+        rank=ds_rank,
+        dataloader_workers=1,
     )
 
     
@@ -405,13 +498,15 @@ def build_dataloaders(args):
         g.manual_seed(args.seed + dist.get_rank()*512)  # 多卡可区分
         return g
     
+    # IMPORTANT: Avoid running heavy HF models inside DataLoader worker processes.
+    # Use single-process iteration for this IterableDataset to prevent hangs/deadlocks.
     ld_train = DataLoader(
-        dataset=dataset_train, 
-        num_workers=args.workers, 
-        pin_memory=True, 
-        generator=get_generator(), 
+        dataset=dataset_train,
+        num_workers=0,
+        pin_memory=True,
+        generator=get_generator(),
         batch_size=None,  # Use None for IterableDataset
-        prefetch_factor=args.prefetch_factor
+        prefetch_factor=None,
     )
     
     iters_train = len(ld_train)
@@ -423,6 +518,21 @@ def build_dataloaders(args):
 
 
 def main_train(args: arg_util.Args):
+    # Initialize wandb if not already initialized and not in offline mode
+    if not wandb.run and os.environ.get("WANDB_MODE") != "offline":
+        try:
+            # Check if WANDB_KEY is available
+            if "WANDB_KEY" in os.environ:
+                wandb_utils.initialize(args, entity="gs285", exp_name=args.exp_name, project_name=args.project_name)
+                print("Wandb initialized successfully")
+            else:
+                print("WANDB_KEY not found, continuing without wandb logging...")
+        except Exception as e:
+            print(f"Warning: Failed to initialize wandb: {e}")
+            print("Continuing without wandb logging...")
+    else:
+        print("Wandb is in offline mode or already initialized, skipping wandb setup...")
+    
     saver = CKPTSaver(dist.is_master(), eval_milestone=None)
     ret = build_everything_from_args(args, saver)
     
@@ -451,7 +561,7 @@ def main_train(args: arg_util.Args):
     ]
 
     # 使用已经设置好的 world_size，而不是直接从环境变量读取
-    world_size = args.world_size
+    world_size = dist.get_world_size()
     start_time, min_L_mean, min_L_tail, max_acc_mean, max_acc_tail = time.time(), 999., 999., -1., -1.
     last_val_loss_mean, best_val_loss_mean, last_val_acc_mean, best_val_acc_mean = 999., 999., 0., 0.
     last_val_loss_tail, best_val_loss_tail, last_val_acc_tail, best_val_acc_tail = 999., 999., 0., 0.
@@ -620,26 +730,55 @@ def train_one_ep(
                     saver.sav(args=args, g_it=(g_it+1), next_ep=ep, next_it=it+1, trainer=trainer, acc_str=f'[todo]', eval_milestone=None, also_save_to=None, best_save_to=None)
             
             with maybe_record_function('before_train'):
-                # [get data from circuit breaker dataset]
-                # The new dataset yields (images, captions) format like the original T2I dataset
-                inp, captions = data
-                
-                # Process text captions
-                tokens = text_tokenizer(text=captions, max_length=text_tokenizer.model_max_length, padding='max_length', truncation=True, return_tensors='pt')
-                input_ids = tokens.input_ids.cuda(non_blocking=True)
-                mask = tokens.attention_mask.cuda(non_blocking=True)
-                text_features = text_encoder(input_ids=input_ids, attention_mask=mask)['last_hidden_state'].float()
-                
-                lens: List[int] = mask.sum(dim=-1).tolist()
-                cu_seqlens_k = F.pad(mask.sum(dim=-1).to(dtype=torch.int32).cumsum_(0), (1, 0))
-                Ltext = max(lens)
-                
-                kv_compact = []
-                for len_i, feat_i in zip(lens, text_features.unbind(0)):
-                    kv_compact.append(feat_i[:len_i])
-                kv_compact = torch.cat(kv_compact, dim=0)
-                text_cond_tuple: Tuple[torch.FloatTensor, List[int], torch.LongTensor, int] = (kv_compact, lens, cu_seqlens_k, Ltext)
-                inp = inp.to(args.device, non_blocking=True)
+                # The new dataset yields a rich batch dict with multiple text conditions
+                if isinstance(data, dict):
+                    inp = data['images'].to(args.device, non_blocking=True)
+                    # Use retain text condition for main AR loss
+                    text_cond_tuple = data['text_cond_tuple']
+                    # Convert list of tuples to a single batched tuple expected by model
+                    # We keep per-sample lens and pack features like before
+                    # Build tokenizer/encoder outputs if needed
+                    kv_compact_list, lens_list = [], []
+                    max_len = 0
+                    for t in text_cond_tuple:
+                        kv_compact_i, lens_i, cu_seqlens_k_i, Ltext_i = t
+                        kv_compact_list.append(kv_compact_i)
+                        lens_list.extend(lens_i)
+                        max_len = max(max_len, Ltext_i)
+                    kv_compact = torch.cat(kv_compact_list, dim=0).to(args.device, non_blocking=True)
+                    # Build cumulative seqlens for packed kv_compact across the whole batch
+                    import numpy as _np
+                    _lens_arr = _np.array(lens_list, dtype=_np.int32)
+                    cu_seqlens_k = torch.tensor(_np.concatenate(([0], _lens_arr.cumsum())), dtype=torch.int32, device=args.device)
+                    try:
+                        dbg_print(
+                            "retain_tuple",
+                            f"lens_len={len(lens_list)} cu_seqlens_shape={tuple(cu_seqlens_k.shape)} dtype={str(cu_seqlens_k.dtype)} device={str(cu_seqlens_k.device)} first5={cu_seqlens_k[:5].tolist()} last={int(cu_seqlens_k[-1])}"
+                        )
+                        if cu_seqlens_k.dim() != 1 or cu_seqlens_k.numel() != (len(lens_list) + 1):
+                            dbg_print("retain_tuple_err", f"INVALID cu_seqlens_k: dim={cu_seqlens_k.dim()} numel={cu_seqlens_k.numel()} expected={len(lens_list)+1}")
+                    except Exception as _e:
+                        dbg_print("retain_tuple_dbg_fail", f"{_e}")
+                    text_cond_tuple = (kv_compact, lens_list, cu_seqlens_k, max_len)
+                    # Prepare cb/val conditions (lists) for cb loss later
+                    text_cond_tuple_cb = data.get('text_cond_tuple_circuit_breaker')
+                    text_cond_tuple_val = data.get('text_cond_tuple_val')
+                else:
+                    # Fallback: old path with (images, captions)
+                    inp, captions = data
+                    tokens = text_tokenizer(text=captions, max_length=text_tokenizer.model_max_length, padding='max_length', truncation=True, return_tensors='pt')
+                    input_ids = tokens.input_ids.cuda(non_blocking=True)
+                    mask = tokens.attention_mask.cuda(non_blocking=True)
+                    text_features = text_encoder(input_ids=input_ids, attention_mask=mask)['last_hidden_state'].float()
+                    lens: List[int] = mask.sum(dim=-1).tolist()
+                    cu_seqlens_k = F.pad(mask.sum(dim=-1).to(dtype=torch.int32).cumsum_(0), (1, 0))
+                    Ltext = max(lens)
+                    kv_compact = []
+                    for len_i, feat_i in zip(lens, text_features.unbind(0)):
+                        kv_compact.append(feat_i[:len_i])
+                    kv_compact = torch.cat(kv_compact, dim=0)
+                    text_cond_tuple = (kv_compact, lens, cu_seqlens_k, Ltext)
+                    inp = inp.to(args.device, non_blocking=True)
                 
                 if it > start_it + 10:
                     telling_dont_kill.early_stop()
@@ -664,15 +803,90 @@ def train_one_ep(
                 step_cnt += int(stepping)
             
             with maybe_record_function('in_training'):
-                # For circuit breaker training, we need to get the additional circuit breaker data
-                # Since the new dataset format doesn't include circuit breaker specific data in the main yield,
-                # we'll need to handle circuit breaker logic differently
-                
-                # For now, we'll use the standard training without circuit breaker loss
-                # The circuit breaker functionality can be added later if needed
+                # Compute optional retain/cb losses using reference of text conditions (lightweight proxy)
                 circuit_breaker_loss = None
-                
-                # Standard training step
+                if isinstance(data, dict) and ('text_cond_tuple_circuit_breaker' in data):
+                    # Use student logits on retain and cb prompts; encourage similarity to retain, dissimilarity to cb
+                    try:
+                        # Student logits on retain prompts (already have text_cond_tuple batched)
+                        # For cb/val, take first item as proxy to avoid heavy duplication
+                        # You can extend to full-batch if needed
+                        # Debug retain tuple before forward
+                        try:
+                            kv_r, lens_r, cu_r, L_r = text_cond_tuple
+                            dbg_print(
+                                "retain_forward",
+                                f"kv_shape={tuple(kv_r.shape)} lens_len={len(lens_r)} cu_shape={tuple(cu_r.shape)} cu_dtype={str(cu_r.dtype)} L={int(L_r)}"
+                            )
+                        except Exception as _e:
+                            dbg_print("retain_forward_dbg_fail", f"{_e}")
+                        logits_ret = trainer.logits_from_inputs(inp, text_cond_tuple, args, use_student=True)
+                        if text_cond_tuple_cb and isinstance(text_cond_tuple_cb, list):
+                            # text_cond_tuple_cb may carry prebuilt (kv, lens, cu_seqlens, L) for CB prompts.
+                            # Some datasets provide cu_seqlens that are not 1D of length (num_seqs + 1).
+                            # Repack to ensure cu_seqlens_k has valid shape (num_seqs + 1)
+                            kv_c_list, lens_c, cu_c, L_c = text_cond_tuple_cb[0]
+                            if isinstance(lens_c, torch.Tensor):
+                                lens_c_list = lens_c.tolist()
+                            else:
+                                lens_c_list = list(lens_c)
+                            # Normalize cu_c to 1D int32 cumulative lengths
+                            try:
+                                cu_c_1d = cu_c.view(-1)
+                            except Exception:
+                                cu_c_1d = cu_c
+                            need_repack = (cu_c_1d.dtype != torch.int32) or (cu_c_1d.dim() != 1) or (cu_c_1d.numel() != (len(lens_c_list) + 1))
+                            if need_repack:
+                                _lens_arr_c = _np.array(lens_c_list, dtype=_np.int32)
+                                cu_c_1d = torch.tensor(_np.concatenate(([0], _lens_arr_c.cumsum())), dtype=torch.int32, device=args.device)
+                            else:
+                                cu_c_1d = cu_c_1d.to(device=args.device, dtype=torch.int32)
+                            cb_tuple = (kv_c_list.to(args.device, non_blocking=True), lens_c_list, cu_c_1d, int(L_c))
+                            try:
+                                dbg_print(
+                                    "cb_tuple",
+                                    f"kv_shape={tuple(cb_tuple[0].shape)} lens_len={len(cb_tuple[1])} cu_shape={tuple(cb_tuple[2].shape)} cu_dtype={str(cb_tuple[2].dtype)} L={cb_tuple[3]} need_repack={need_repack}"
+                                )
+                                if cb_tuple[2].dim() != 1 or cb_tuple[2].numel() != (len(cb_tuple[1]) + 1):
+                                    dbg_print("cb_tuple_err", f"INVALID cu_seqlens_k: dim={cb_tuple[2].dim()} numel={cb_tuple[2].numel()} expected={len(cb_tuple[1])+1}")
+                            except Exception as _e:
+                                dbg_print("cb_tuple_dbg_fail", f"{_e}")
+                            logits_cb = trainer.logits_from_inputs(inp, cb_tuple, args, use_student=True)
+                        else:
+                            logits_cb = None
+
+                        # Retain loss: encourage consistency on retain vs itself (identity); implement as small L2 on logits history if needed
+                        retain_loss = 0.0 * logits_ret.mean()
+
+                        # Circuit breaker loss: discourage alignment to cb logits by maximizing similarity negativity
+                        if logits_cb is not None and logits_cb.shape == logits_ret.shape:
+                            # Normalize and penalize positive cosine similarity
+                            ret_n = torch.nn.functional.normalize(logits_ret.float(), dim=-1)
+                            cb_n = torch.nn.functional.normalize(logits_cb.float(), dim=-1)
+                            inner = (ret_n * cb_n).sum(dim=-1)  # [B, L]
+                            cb_loss = torch.relu(inner).mean()
+                        else:
+                            cb_loss = None
+
+                        if cb_loss is not None:
+                            # ===== coefficient schedule (match lorra_circuit_breaker.py) =====
+                            if args.coeff_schedule == 'linear_converge':
+                                progress = g_it / max(1, (max_it - 1))
+                            else:
+                                progress = g_it / max(1, (max_it - 1))
+                            scheduled_coeff = progress
+                            retain_coeff = args.lorra_alpha * scheduled_coeff
+                            cb_coeff = args.lorra_alpha * (1 - scheduled_coeff)
+                            circuit_breaker_loss = retain_coeff * retain_loss + cb_coeff * cb_loss
+                            try:
+                                dbg_print("cb_loss", f"ret_loss={float(retain_loss)} cb_loss={float(cb_loss)} coeffs=(ret={retain_coeff:.4f}, cb={cb_coeff:.4f}) total={float(circuit_breaker_loss)}")
+                            except Exception:
+                                pass
+                    except Exception as e:
+                        print(f"Warning: CB loss computation skipped due to: {e}")
+                        dbg_print("cb_exception", f"{repr(e)}")
+
+                # Standard training step, optionally with circuit_breaker_loss added inside trainer
                 grad_norm_t, scale_log2_t = trainer.train_step(
                     ep=ep, it=it, g_it=g_it, stepping=stepping, clip_decay_ratio=clip_decay_ratio,
                     metric_lg=me, 
@@ -680,15 +894,16 @@ def train_one_ep(
                     inp_B3HW=inp, 
                     text_cond_tuple=text_cond_tuple,
                     args=args,
+                    circuit_breaker_loss=circuit_breaker_loss,
                 )
                 
                 # Update metrics
-                me.update('tnm', grad_norm_t)
+                me.update(tnm=grad_norm_t)
                 # Note: stats will be updated by the trainer, we just update the grad norm here
                 
                 # Log progress
-                if it % args.log_freq == 0:
-                    print(f'{header} [{it+1:4d}/{iters_train}] Lm: {me.meters["Lm"].median:.3f}, Lt: {me.meters["Lt"].median:.3f}, Accm: {me.meters["Accm"].median:.2f}, Acct: {me.meters["Acct"].median:.2f}, Grad: {me.meters["tnm"].median:.2f}')
+                if it % max(1, args.log_freq // 2) == 0:
+                    print(f'{header} [{it+1:4d}/{iters_train}] Lm: {me.meters["Lm"].median:.3f}, Lt: {me.meters["Lt"].median:.3f}, Accm: {me.meters["Accm"].median:.2f}, Acct: {me.meters["Acct"].median:.2f}, Grad: {me.meters["tnm"].median:.2f}', flush=True)
         
         # Return training statistics
         stats = {

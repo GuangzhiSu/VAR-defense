@@ -422,7 +422,7 @@ def train():
     # Create args for Infinity model (similar to train.py)
     args = arg_util.Args()
     args.model = getattr(model_args, 'model', "infinity_2b")
-    args.vae_ckpt = getattr(model_args, 'vae_ckpt', "weights/infinity_vae_d32_rdn_short.pth")
+    args.vae_ckpt = getattr(model_args, 'vae_ckpt', "/home/gs285/VAR-defense/weights/infinity_vae_d32.pth")
     args.device = "cuda"
     args.model_init_device = "cuda"
     

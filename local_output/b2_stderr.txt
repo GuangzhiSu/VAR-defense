@@ -969,3 +969,962 @@ Traceback (most recent call last):
   File "/home/gs285/miniconda3/envs/Infi/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1341, in convert
     return t.to(
 torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 144.00 MiB. GPU 0 has a total capacity of 79.14 GiB of which 89.19 MiB is free. Process 2972736 has 49.37 GiB memory in use. Including non-PyTorch memory, this process has 29.66 GiB memory in use. Of the allocated memory 29.15 GiB is allocated by PyTorch, and 37.19 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 14:08:18]   =======================================================
+Traceback (most recent call last):
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+    main() 
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 712, in main
+    args = init_dist_and_get_combined_args()
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/combined_args.py", line 721, in init_dist_and_get_combined_args
+    from infinity.models import alias_dict, alias_dict_inv
+  File "/home/gs285/VAR-defense/infinity/models/__init__.py", line 2, in <module>
+    from timm.loss import SoftTargetCrossEntropy
+ModuleNotFoundError: No module named 'timm'
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 15:30:00]   =======================================================
+config.json:   0%|          | 0.00/1.21k [00:00<?, ?B/s]config.json: 100%|##########| 1.21k/1.21k [00:00<00:00, 3.61MB/s]
+model.safetensors:   0%|          | 0.00/892M [00:00<?, ?B/s]model.safetensors:   8%|7         | 67.0M/892M [00:03<00:49, 16.8MB/s]model.safetensors:  15%|#5        | 134M/892M [00:04<00:22, 34.3MB/s] model.safetensors:  23%|##2       | 201M/892M [00:05<00:13, 51.3MB/s]model.safetensors:  30%|###       | 268M/892M [00:05<00:09, 65.5MB/s]model.safetensors:  38%|###7      | 335M/892M [00:06<00:06, 81.5MB/s]model.safetensors:  40%|###9      | 355M/892M [00:06<00:06, 84.2MB/s]model.safetensors:  47%|####7     | 423M/892M [00:07<00:05, 87.8MB/s]model.safetensors:  55%|#####4    | 490M/892M [00:07<00:04, 96.3MB/s]model.safetensors:  62%|######2   | 557M/892M [00:08<00:03, 101MB/s] model.safetensors:  70%|######9   | 624M/892M [00:10<00:04, 54.2MB/s]model.safetensors:  77%|#######7  | 691M/892M [00:11<00:03, 54.0MB/s]model.safetensors:  85%|########4 | 758M/892M [00:14<00:03, 43.5MB/s]model.safetensors:  92%|#########2| 825M/892M [00:15<00:01, 46.9MB/s]model.safetensors: 100%|##########| 892M/892M [00:16<00:00, 48.3MB/s]model.safetensors: 100%|##########| 892M/892M [00:16<00:00, 53.9MB/s]
+spiece.model:   0%|          | 0.00/792k [00:00<?, ?B/s]spiece.model: 100%|##########| 792k/792k [00:00<00:00, 11.1MB/s]
+tokenizer.json:   0%|          | 0.00/1.39M [00:00<?, ?B/s]tokenizer.json: 100%|##########| 1.39M/1.39M [00:00<00:00, 28.0MB/s]
+Traceback (most recent call last):
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+    main() 
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 738, in main
+    main_train(args)
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 427, in main_train
+    ret = build_everything_from_args(args, saver)
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 155, in build_everything_from_args
+    text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 199, in build_model_optimizer
+    from infinity.utils.load import build_vae_gpt
+  File "/home/gs285/VAR-defense/infinity/utils/load.py", line 10, in <module>
+    import colorama
+ModuleNotFoundError: No module named 'colorama'
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 15:36:19]   =======================================================
+tokenizer_config.json: 0.00B [00:00, ?B/s]tokenizer_config.json: 2.54kB [00:00, 4.78MB/s]
+spiece.model:   0%|          | 0.00/792k [00:00<?, ?B/s]spiece.model:  89%|########9 | 706k/792k [00:00<00:00, 801kB/s]spiece.model: 100%|##########| 792k/792k [00:00<00:00, 850kB/s]
+tokenizer.json: 0.00B [00:00, ?B/s]tokenizer.json: 2.42MB [00:00, 36.6MB/s]
+special_tokens_map.json: 0.00B [00:00, ?B/s]special_tokens_map.json: 2.20kB [00:00, 5.04MB/s]
+config.json: 0.00B [00:00, ?B/s]config.json: 1.44kB [00:00, 3.16MB/s]
+model.safetensors.index.json: 0.00B [00:00, ?B/s]model.safetensors.index.json: 53.0kB [00:00, 88.4MB/s]
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+model-00001-of-00002.safetensors:   0%|          | 0.00/9.45G [00:00<?, ?B/s][A
+
+model-00002-of-00002.safetensors:   0%|          | 0.00/1.95G [00:00<?, ?B/s][A[A
+model-00001-of-00002.safetensors:   0%|          | 406k/9.45G [00:01<7:44:32, 339kB/s][A
+
+model-00002-of-00002.safetensors:   0%|          | 1.07M/1.95G [00:01<38:31, 843kB/s][A[A
+model-00001-of-00002.safetensors:   0%|          | 3.14M/9.45G [00:01<52:03, 3.02MB/s][A
+model-00001-of-00002.safetensors:   0%|          | 4.49M/9.45G [00:01<48:45, 3.23MB/s][A
+
+model-00002-of-00002.safetensors:   2%|1         | 36.3M/1.95G [00:13<11:27, 2.78MB/s][A[A
+
+model-00002-of-00002.safetensors:   4%|3         | 68.8M/1.95G [00:14<05:41, 5.50MB/s][A[A
+model-00001-of-00002.safetensors:   0%|          | 4.96M/9.45G [00:15<48:45, 3.23MB/s][A
+
+model-00002-of-00002.safetensors:   4%|3         | 73.1M/1.95G [00:15<05:28, 5.71MB/s][A[A
+
+model-00002-of-00002.safetensors:   7%|7         | 140M/1.95G [00:18<02:41, 11.2MB/s] [A[A
+model-00001-of-00002.safetensors:   0%|          | 5.13M/9.45G [00:18<15:02:24, 174kB/s][A
+model-00001-of-00002.safetensors:   1%|          | 72.2M/9.45G [00:20<31:10, 5.01MB/s]  [A
+model-00001-of-00002.safetensors:   1%|1         | 136M/9.45G [00:20<14:39, 10.6MB/s] [A
+model-00001-of-00002.safetensors:   2%|2         | 203M/9.45G [00:21<08:31, 18.1MB/s][A
+
+model-00002-of-00002.safetensors:  11%|#         | 207M/1.95G [00:22<02:06, 13.8MB/s][A[A
+model-00001-of-00002.safetensors:   3%|2         | 273M/9.45G [00:22<06:10, 24.8MB/s][A
+model-00001-of-00002.safetensors:   4%|3         | 340M/9.45G [00:23<04:25, 34.3MB/s][A
+model-00001-of-00002.safetensors:   4%|4         | 408M/9.45G [00:24<03:28, 43.4MB/s][A
+
+model-00002-of-00002.safetensors:  14%|#4        | 274M/1.95G [00:24<01:38, 17.1MB/s][A[A
+
+model-00002-of-00002.safetensors:  18%|#7        | 341M/1.95G [00:25<01:04, 25.0MB/s][A[A
+
+model-00002-of-00002.safetensors:  21%|##        | 408M/1.95G [00:25<00:44, 34.7MB/s][A[A
+
+model-00002-of-00002.safetensors:  24%|##4       | 475M/1.95G [00:26<00:32, 44.8MB/s][A[A
+model-00001-of-00002.safetensors:   5%|5         | 475M/9.45G [00:27<04:28, 33.4MB/s][A
+model-00001-of-00002.safetensors:   6%|5         | 542M/9.45G [00:27<03:29, 42.6MB/s][A
+
+model-00002-of-00002.safetensors:  28%|##7       | 542M/1.95G [00:28<00:34, 40.3MB/s][A[A
+
+model-00002-of-00002.safetensors:  31%|###1      | 609M/1.95G [00:29<00:26, 50.8MB/s][A[A
+
+model-00002-of-00002.safetensors:  35%|###4      | 677M/1.95G [00:29<00:20, 62.6MB/s][A[A
+
+model-00002-of-00002.safetensors:  38%|###8      | 744M/1.95G [00:30<00:16, 71.5MB/s][A[A
+
+model-00002-of-00002.safetensors:  42%|####1     | 811M/1.95G [00:30<00:14, 77.4MB/s][A[A
+
+model-00002-of-00002.safetensors:  45%|####5     | 878M/1.95G [00:31<00:11, 89.6MB/s][A[A
+model-00001-of-00002.safetensors:   6%|6         | 610M/9.45G [00:31<05:09, 28.6MB/s][A
+model-00001-of-00002.safetensors:   7%|7         | 677M/9.45G [00:32<03:56, 37.2MB/s][A
+model-00001-of-00002.safetensors:   8%|7         | 744M/9.45G [00:33<03:02, 47.8MB/s][A
+
+model-00002-of-00002.safetensors:  48%|####8     | 945M/1.95G [00:33<00:17, 58.5MB/s][A[A
+model-00001-of-00002.safetensors:   9%|8         | 811M/9.45G [00:34<02:56, 48.8MB/s][A
+model-00001-of-00002.safetensors:   9%|9         | 878M/9.45G [00:35<02:29, 57.2MB/s][A
+model-00001-of-00002.safetensors:  10%|9         | 945M/9.45G [00:35<02:11, 64.8MB/s][A
+
+model-00002-of-00002.safetensors:  52%|#####1    | 1.01G/1.95G [00:36<00:23, 40.1MB/s][A[A
+model-00001-of-00002.safetensors:  11%|#         | 1.01G/9.45G [00:36<02:14, 62.6MB/s][A
+
+model-00002-of-00002.safetensors:  55%|#####5    | 1.08G/1.95G [00:37<00:19, 44.5MB/s][A[A
+
+model-00002-of-00002.safetensors:  59%|#####8    | 1.15G/1.95G [00:38<00:15, 52.3MB/s][A[A
+
+model-00002-of-00002.safetensors:  62%|######2   | 1.21G/1.95G [00:38<00:12, 61.3MB/s][A[A
+model-00001-of-00002.safetensors:  11%|#1        | 1.08G/9.45G [00:39<03:23, 41.2MB/s][A
+
+model-00002-of-00002.safetensors:  66%|######5   | 1.28G/1.95G [00:40<00:11, 57.0MB/s][A[A
+
+model-00002-of-00002.safetensors:  69%|######9   | 1.35G/1.95G [00:40<00:09, 66.7MB/s][A[A
+
+model-00002-of-00002.safetensors:  72%|#######2  | 1.41G/1.95G [00:41<00:06, 77.1MB/s][A[A
+
+model-00002-of-00002.safetensors:  76%|#######5  | 1.48G/1.95G [00:41<00:05, 87.9MB/s][A[A
+model-00001-of-00002.safetensors:  12%|#2        | 1.15G/9.45G [00:42<03:59, 34.6MB/s][A
+
+model-00002-of-00002.safetensors:  79%|#######9  | 1.55G/1.95G [00:43<00:05, 77.8MB/s][A[A
+
+model-00002-of-00002.safetensors:  83%|########2 | 1.61G/1.95G [00:43<00:03, 88.3MB/s][A[A
+
+model-00002-of-00002.safetensors:  86%|########6 | 1.68G/1.95G [00:44<00:02, 96.2MB/s][A[A
+
+model-00002-of-00002.safetensors:  90%|########9 | 1.75G/1.95G [00:44<00:01, 103MB/s] [A[A
+model-00001-of-00002.safetensors:  13%|#2        | 1.21G/9.45G [00:45<04:25, 31.0MB/s][A
+model-00001-of-00002.safetensors:  14%|#3        | 1.28G/9.45G [00:45<03:31, 38.7MB/s][A
+model-00001-of-00002.safetensors:  14%|#4        | 1.35G/9.45G [00:46<02:53, 46.7MB/s][A
+
+model-00002-of-00002.safetensors:  93%|#########3| 1.82G/1.95G [00:47<00:02, 55.1MB/s][A[A
+
+model-00002-of-00002.safetensors:  97%|#########6| 1.88G/1.95G [00:47<00:01, 65.7MB/s][A[A
+
+model-00002-of-00002.safetensors: 100%|##########| 1.95G/1.95G [00:48<00:00, 78.6MB/s][A[Amodel-00002-of-00002.safetensors: 100%|##########| 1.95G/1.95G [00:48<00:00, 40.4MB/s]
+
+model-00001-of-00002.safetensors:  15%|#4        | 1.42G/9.45G [00:48<03:16, 40.8MB/s][A
+model-00001-of-00002.safetensors:  16%|#5        | 1.48G/9.45G [00:49<02:45, 48.2MB/s][A
+model-00001-of-00002.safetensors:  16%|#6        | 1.54G/9.45G [00:50<02:21, 56.0MB/s][A
+model-00001-of-00002.safetensors:  17%|#7        | 1.61G/9.45G [00:50<01:57, 66.8MB/s][A
+model-00001-of-00002.safetensors:  18%|#7        | 1.68G/9.45G [00:51<01:35, 81.5MB/s][A
+model-00001-of-00002.safetensors:  18%|#8        | 1.74G/9.45G [00:51<01:26, 89.6MB/s][A
+model-00001-of-00002.safetensors:  19%|#9        | 1.81G/9.45G [00:52<01:17, 98.6MB/s][A
+model-00001-of-00002.safetensors:  20%|#9        | 1.88G/9.45G [00:52<01:14, 102MB/s] [A
+model-00001-of-00002.safetensors:  21%|##        | 1.95G/9.45G [00:53<01:15, 99.5MB/s][A
+model-00001-of-00002.safetensors:  21%|##1       | 2.01G/9.45G [00:54<01:15, 98.3MB/s][A
+model-00001-of-00002.safetensors:  22%|##2       | 2.08G/9.45G [00:54<01:08, 107MB/s] [A
+model-00001-of-00002.safetensors:  23%|##2       | 2.15G/9.45G [00:55<01:02, 117MB/s][A
+model-00001-of-00002.safetensors:  23%|##3       | 2.22G/9.45G [00:55<00:59, 123MB/s][A
+model-00001-of-00002.safetensors:  24%|##4       | 2.28G/9.45G [00:56<00:58, 123MB/s][A
+model-00001-of-00002.safetensors:  25%|##4       | 2.35G/9.45G [00:56<00:59, 120MB/s][A
+model-00001-of-00002.safetensors:  26%|##5       | 2.42G/9.45G [00:57<01:00, 117MB/s][A
+model-00001-of-00002.safetensors:  26%|##6       | 2.48G/9.45G [00:58<00:59, 116MB/s][A
+model-00001-of-00002.safetensors:  27%|##6       | 2.55G/9.45G [00:58<00:57, 121MB/s][A
+model-00001-of-00002.safetensors:  28%|##7       | 2.62G/9.45G [00:59<00:54, 125MB/s][A
+model-00001-of-00002.safetensors:  28%|##8       | 2.69G/9.45G [00:59<00:52, 129MB/s][A
+model-00001-of-00002.safetensors:  29%|##9       | 2.75G/9.45G [01:00<01:05, 102MB/s][A
+model-00001-of-00002.safetensors:  30%|##9       | 2.82G/9.45G [01:01<01:01, 109MB/s][A
+model-00001-of-00002.safetensors:  31%|###       | 2.89G/9.45G [01:01<00:54, 120MB/s][A
+model-00001-of-00002.safetensors:  31%|###1      | 2.95G/9.45G [01:01<00:50, 129MB/s][A
+model-00001-of-00002.safetensors:  32%|###1      | 3.02G/9.45G [01:02<00:49, 131MB/s][A
+model-00001-of-00002.safetensors:  33%|###2      | 3.09G/9.45G [01:02<00:45, 139MB/s][A
+model-00001-of-00002.safetensors:  34%|###3      | 3.17G/9.45G [01:03<00:52, 120MB/s][A
+model-00001-of-00002.safetensors:  34%|###4      | 3.24G/9.45G [01:06<01:36, 64.6MB/s][A
+model-00001-of-00002.safetensors:  37%|###7      | 3.51G/9.45G [01:06<00:41, 143MB/s] [A
+model-00001-of-00002.safetensors:  38%|###7      | 3.58G/9.45G [01:06<00:41, 141MB/s][A
+model-00001-of-00002.safetensors:  39%|###8      | 3.64G/9.45G [01:07<00:43, 133MB/s][A
+model-00001-of-00002.safetensors:  39%|###9      | 3.71G/9.45G [01:08<00:45, 126MB/s][A
+model-00001-of-00002.safetensors:  40%|###9      | 3.78G/9.45G [01:08<00:44, 127MB/s][A
+model-00001-of-00002.safetensors:  41%|####      | 3.84G/9.45G [01:09<00:45, 124MB/s][A
+model-00001-of-00002.safetensors:  41%|####1     | 3.91G/9.45G [01:09<00:42, 131MB/s][A
+model-00001-of-00002.safetensors:  42%|####2     | 3.98G/9.45G [01:10<00:43, 126MB/s][A
+model-00001-of-00002.safetensors:  43%|####2     | 4.05G/9.45G [01:11<00:48, 112MB/s][A
+model-00001-of-00002.safetensors:  44%|####3     | 4.11G/9.45G [01:11<00:48, 110MB/s][A
+model-00001-of-00002.safetensors:  44%|####4     | 4.18G/9.45G [01:12<00:45, 115MB/s][A
+model-00001-of-00002.safetensors:  45%|####4     | 4.25G/9.45G [01:12<00:45, 114MB/s][A
+model-00001-of-00002.safetensors:  46%|####5     | 4.32G/9.45G [01:13<00:45, 112MB/s][A
+model-00001-of-00002.safetensors:  46%|####6     | 4.36G/9.45G [01:13<00:44, 114MB/s][A
+model-00001-of-00002.safetensors:  47%|####6     | 4.43G/9.45G [01:14<00:42, 117MB/s][A
+model-00001-of-00002.safetensors:  48%|####7     | 4.50G/9.45G [01:15<00:43, 113MB/s][A
+model-00001-of-00002.safetensors:  48%|####8     | 4.56G/9.45G [01:15<00:43, 114MB/s][A
+model-00001-of-00002.safetensors:  49%|####9     | 4.63G/9.45G [01:16<00:39, 123MB/s][A
+model-00001-of-00002.safetensors:  50%|####9     | 4.70G/9.45G [01:16<00:36, 129MB/s][A
+model-00001-of-00002.safetensors:  50%|#####     | 4.77G/9.45G [01:17<00:35, 133MB/s][A
+model-00001-of-00002.safetensors:  51%|#####1    | 4.83G/9.45G [01:17<00:41, 112MB/s][A
+model-00001-of-00002.safetensors:  52%|#####1    | 4.90G/9.45G [01:18<00:40, 112MB/s][A
+model-00001-of-00002.safetensors:  53%|#####2    | 4.97G/9.45G [01:19<00:42, 105MB/s][A
+model-00001-of-00002.safetensors:  53%|#####3    | 5.03G/9.45G [01:19<00:40, 108MB/s][A
+model-00001-of-00002.safetensors:  54%|#####3    | 5.10G/9.45G [01:20<00:39, 110MB/s][A
+model-00001-of-00002.safetensors:  55%|#####4    | 5.17G/9.45G [01:20<00:37, 115MB/s][A
+model-00001-of-00002.safetensors:  55%|#####4    | 5.20G/9.45G [01:21<00:39, 108MB/s][A
+model-00001-of-00002.safetensors:  56%|#####5    | 5.27G/9.45G [01:21<00:38, 110MB/s][A
+model-00001-of-00002.safetensors:  56%|#####6    | 5.34G/9.45G [01:22<00:37, 110MB/s][A
+model-00001-of-00002.safetensors:  57%|#####7    | 5.40G/9.45G [01:23<00:37, 109MB/s][A
+model-00001-of-00002.safetensors:  58%|#####7    | 5.47G/9.45G [01:23<00:34, 116MB/s][A
+model-00001-of-00002.safetensors:  59%|#####8    | 5.54G/9.45G [01:24<00:31, 125MB/s][A
+model-00001-of-00002.safetensors:  59%|#####9    | 5.60G/9.45G [01:24<00:30, 125MB/s][A
+model-00001-of-00002.safetensors:  60%|######    | 5.67G/9.45G [01:25<00:32, 116MB/s][A
+model-00001-of-00002.safetensors:  61%|######    | 5.74G/9.45G [01:25<00:33, 110MB/s][A
+model-00001-of-00002.safetensors:  61%|######1   | 5.81G/9.45G [01:26<00:29, 122MB/s][A
+model-00001-of-00002.safetensors:  62%|######2   | 5.87G/9.45G [01:26<00:28, 128MB/s][A
+model-00001-of-00002.safetensors:  63%|######2   | 5.94G/9.45G [01:27<00:26, 131MB/s][A
+model-00001-of-00002.safetensors:  63%|######3   | 5.96G/9.45G [01:27<00:37, 93.9MB/s][A
+model-00001-of-00002.safetensors:  63%|######3   | 5.97G/9.45G [01:29<01:11, 49.0MB/s][A
+model-00001-of-00002.safetensors:  63%|######3   | 5.98G/9.45G [01:32<02:35, 22.3MB/s][A
+model-00001-of-00002.safetensors:  63%|######3   | 6.00G/9.45G [01:38<05:52, 9.79MB/s][A
+model-00001-of-00002.safetensors:  64%|######4   | 6.07G/9.45G [01:40<03:50, 14.7MB/s][A
+model-00001-of-00002.safetensors:  65%|######4   | 6.14G/9.45G [01:41<02:29, 22.2MB/s][A
+model-00001-of-00002.safetensors:  66%|######5   | 6.20G/9.45G [01:42<01:49, 29.6MB/s][A
+model-00001-of-00002.safetensors:  66%|######5   | 6.21G/9.45G [01:44<02:25, 22.3MB/s][A
+model-00001-of-00002.safetensors:  66%|######5   | 6.22G/9.45G [01:46<03:19, 16.2MB/s][A
+model-00001-of-00002.safetensors:  67%|######6   | 6.28G/9.45G [01:47<01:58, 26.7MB/s][A
+model-00001-of-00002.safetensors:  67%|######7   | 6.35G/9.45G [01:47<01:17, 40.2MB/s][A
+model-00001-of-00002.safetensors:  68%|######7   | 6.42G/9.45G [01:48<00:56, 53.9MB/s][A
+model-00001-of-00002.safetensors:  69%|######8   | 6.49G/9.45G [01:48<00:42, 69.5MB/s][A
+model-00001-of-00002.safetensors:  69%|######9   | 6.55G/9.45G [01:49<00:35, 82.4MB/s][A
+model-00001-of-00002.safetensors:  70%|#######   | 6.62G/9.45G [01:49<00:29, 97.5MB/s][A
+model-00001-of-00002.safetensors:  71%|#######   | 6.69G/9.45G [01:50<00:27, 99.7MB/s][A
+model-00001-of-00002.safetensors:  72%|#######1  | 6.76G/9.45G [01:50<00:26, 99.8MB/s][A
+model-00001-of-00002.safetensors:  72%|#######2  | 6.83G/9.45G [01:51<00:26, 99.3MB/s][A
+model-00001-of-00002.safetensors:  73%|#######2  | 6.90G/9.45G [01:52<00:23, 109MB/s] [A
+model-00001-of-00002.safetensors:  74%|#######3  | 6.96G/9.45G [01:52<00:21, 116MB/s][A
+model-00001-of-00002.safetensors:  74%|#######4  | 7.03G/9.45G [01:53<00:19, 123MB/s][A
+model-00001-of-00002.safetensors:  75%|#######5  | 7.10G/9.45G [01:53<00:22, 103MB/s][A
+model-00001-of-00002.safetensors:  76%|#######5  | 7.16G/9.45G [01:54<00:21, 105MB/s][A
+model-00001-of-00002.safetensors:  77%|#######6  | 7.23G/9.45G [01:55<00:22, 101MB/s][A
+model-00001-of-00002.safetensors:  77%|#######7  | 7.30G/9.45G [01:55<00:20, 103MB/s][A
+model-00001-of-00002.safetensors:  78%|#######7  | 7.37G/9.45G [01:56<00:19, 108MB/s][A
+model-00001-of-00002.safetensors:  79%|#######8  | 7.42G/9.45G [01:56<00:17, 117MB/s][A
+model-00001-of-00002.safetensors:  79%|#######9  | 7.49G/9.45G [01:57<00:15, 130MB/s][A
+model-00001-of-00002.safetensors:  80%|#######9  | 7.56G/9.45G [01:58<00:17, 107MB/s][A
+model-00001-of-00002.safetensors:  81%|########  | 7.62G/9.45G [01:58<00:18, 101MB/s][A
+model-00001-of-00002.safetensors:  81%|########1 | 7.69G/9.45G [01:59<00:16, 108MB/s][A
+model-00001-of-00002.safetensors:  82%|########2 | 7.76G/9.45G [01:59<00:15, 113MB/s][A
+model-00001-of-00002.safetensors:  83%|########2 | 7.82G/9.45G [02:00<00:13, 120MB/s][A
+model-00001-of-00002.safetensors:  84%|########3 | 7.89G/9.45G [02:00<00:12, 126MB/s][A
+model-00001-of-00002.safetensors:  84%|########4 | 7.96G/9.45G [02:01<00:12, 122MB/s][A
+model-00001-of-00002.safetensors:  85%|########4 | 8.02G/9.45G [02:01<00:11, 123MB/s][A
+model-00001-of-00002.safetensors:  86%|########5 | 8.09G/9.45G [02:02<00:12, 110MB/s][A
+model-00001-of-00002.safetensors:  86%|########5 | 8.12G/9.45G [02:03<00:12, 106MB/s][A
+model-00001-of-00002.safetensors:  87%|########6 | 8.18G/9.45G [02:03<00:10, 119MB/s][A
+model-00001-of-00002.safetensors:  87%|########7 | 8.24G/9.45G [02:03<00:10, 120MB/s][A
+model-00001-of-00002.safetensors:  88%|########7 | 8.31G/9.45G [02:04<00:09, 123MB/s][A
+model-00001-of-00002.safetensors:  89%|########8 | 8.38G/9.45G [02:05<00:09, 109MB/s][A
+model-00001-of-00002.safetensors:  89%|########9 | 8.44G/9.45G [02:05<00:09, 105MB/s][A
+model-00001-of-00002.safetensors:  90%|######### | 8.51G/9.45G [02:06<00:09, 104MB/s][A
+model-00001-of-00002.safetensors:  91%|######### | 8.58G/9.45G [02:07<00:08, 109MB/s][A
+model-00001-of-00002.safetensors:  91%|#########1| 8.64G/9.45G [02:07<00:06, 120MB/s][A
+model-00001-of-00002.safetensors:  92%|#########2| 8.71G/9.45G [02:07<00:05, 131MB/s][A
+model-00001-of-00002.safetensors:  93%|#########2| 8.78G/9.45G [02:08<00:05, 130MB/s][A
+model-00001-of-00002.safetensors:  94%|#########3| 8.85G/9.45G [02:08<00:04, 136MB/s][A
+model-00001-of-00002.safetensors:  94%|#########4| 8.91G/9.45G [02:09<00:03, 134MB/s][A
+model-00001-of-00002.safetensors:  95%|#########5| 8.98G/9.45G [02:10<00:03, 128MB/s][A
+model-00001-of-00002.safetensors:  96%|#########5| 9.05G/9.45G [02:10<00:03, 134MB/s][A
+model-00001-of-00002.safetensors:  96%|#########6| 9.11G/9.45G [02:10<00:02, 143MB/s][A
+model-00001-of-00002.safetensors:  97%|#########7| 9.18G/9.45G [02:11<00:01, 145MB/s][A
+model-00001-of-00002.safetensors:  98%|#########7| 9.25G/9.45G [02:12<00:01, 116MB/s][A
+model-00001-of-00002.safetensors:  99%|#########8| 9.32G/9.45G [02:12<00:01, 115MB/s][A
+model-00001-of-00002.safetensors:  99%|#########9| 9.38G/9.45G [02:13<00:00, 121MB/s][A
+model-00001-of-00002.safetensors: 100%|##########| 9.45G/9.45G [02:13<00:00, 128MB/s][Amodel-00001-of-00002.safetensors: 100%|##########| 9.45G/9.45G [02:13<00:00, 70.7MB/s]
+Fetching 2 files:  50%|#####     | 1/2 [02:13<02:13, 133.84s/it]Fetching 2 files: 100%|##########| 2/2 [02:13<00:00, 66.92s/it] 
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:06<00:06,  6.50s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:06<00:00,  3.25s/it]
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+Traceback (most recent call last):
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+    main()
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 738, in main
+    main_train(args)
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 472, in main_train
+    stats, (sec, remain_time, finish_time) = train_one_ep(
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 676, in train_one_ep
+    grad_norm_t, scale_log2_t = trainer.train_step(
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/trainer.py", line 224, in train_step
+    grad_norm_t, scale_log2_t = self.gpt_opt.backward_clip_step(ep=ep, it=it, g_it=g_it, stepping=stepping, logging_params=logging_params, loss=loss, clip_decay_ratio=clip_decay_ratio, stable=args.stable)
+  File "/home/gs285/VAR-defense/infinity/utils/amp_opt.py", line 122, in backward_clip_step
+    loss.backward(retain_graph=False, create_graph=False)
+  File "/home/gs285/.local/lib/python3.10/site-packages/torch/_tensor.py", line 648, in backward
+    torch.autograd.backward(
+  File "/home/gs285/.local/lib/python3.10/site-packages/torch/autograd/__init__.py", line 353, in backward
+    _engine_run_backward(
+  File "/home/gs285/.local/lib/python3.10/site-packages/torch/autograd/graph.py", line 824, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 72.00 MiB. GPU 0 has a total capacity of 44.52 GiB of which 22.50 MiB is free. Process 3227512 has 4.95 GiB memory in use. Including non-PyTorch memory, this process has 39.54 GiB memory in use. Of the allocated memory 38.74 GiB is allocated by PyTorch, and 289.91 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 15:42:38]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:00<00:00,  4.03it/s]Loading checkpoint shards: 100%|##########| 2/2 [00:00<00:00,  7.90it/s]
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+Traceback (most recent call last):
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+    main()
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 738, in main
+    main_train(args)
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 472, in main_train
+    stats, (sec, remain_time, finish_time) = train_one_ep(
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 676, in train_one_ep
+    grad_norm_t, scale_log2_t = trainer.train_step(
+  File "/home/gs285/VAR-defense/circuit-breaker_original/src/trainer.py", line 224, in train_step
+    grad_norm_t, scale_log2_t = self.gpt_opt.backward_clip_step(ep=ep, it=it, g_it=g_it, stepping=stepping, logging_params=logging_params, loss=loss, clip_decay_ratio=clip_decay_ratio, stable=args.stable)
+  File "/home/gs285/VAR-defense/infinity/utils/amp_opt.py", line 122, in backward_clip_step
+    loss.backward(retain_graph=False, create_graph=False)
+  File "/home/gs285/.local/lib/python3.10/site-packages/torch/_tensor.py", line 648, in backward
+    torch.autograd.backward(
+  File "/home/gs285/.local/lib/python3.10/site-packages/torch/autograd/__init__.py", line 353, in backward
+    _engine_run_backward(
+  File "/home/gs285/.local/lib/python3.10/site-packages/torch/autograd/graph.py", line 824, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 72.00 MiB. GPU 0 has a total capacity of 44.52 GiB of which 50.50 MiB is free. Process 3227512 has 4.95 GiB memory in use. Including non-PyTorch memory, this process has 39.51 GiB memory in use. Of the allocated memory 38.73 GiB is allocated by PyTorch, and 272.15 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 15:49:04]   =======================================================
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+[rank0]:     main()
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 738, in main
+[rank0]:     main_train(args)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 427, in main_train
+[rank0]:     ret = build_everything_from_args(args, saver)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 135, in build_everything_from_args
+[rank0]:     setup_dist_if_needed(args)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 118, in setup_dist_if_needed
+[rank0]:     if not dist.is_initialized():
+[rank0]: AttributeError: module 'infinity.utils.dist' has no attribute 'is_initialized'. Did you mean: '__initialized'?
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 15:58:26]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.66s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.20it/s]
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 742, in <module>
+[rank0]:     main()
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 738, in main
+[rank0]:     main_train(args)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 454, in main_train
+[rank0]:     world_size = args.world_size
+[rank0]: AttributeError: 'CombinedArgs' object has no attribute 'world_size'
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 16:03:46]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.60s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.25it/s]
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 744, in <module>
+[rank0]:     main()
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 740, in main
+[rank0]:     main_train(args)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 474, in main_train
+[rank0]:     stats, (sec, remain_time, finish_time) = train_one_ep(
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 678, in train_one_ep
+[rank0]:     grad_norm_t, scale_log2_t = trainer.train_step(
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/trainer.py", line 189, in train_step
+[rank0]:     logits_BLV = self.gpt(text_cond_tuple, x_BLC_wo_prefix, scale_schedule=scale_schedule[:training_scales]) # [bs, 1*1+...+64*64, vocab_size or log2(vocab_size)*2]
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py", line 856, in forward
+[rank0]:     output = self._fsdp_wrapped_module(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/models/infinity.py", line 442, in forward
+[rank0]:     x_BLC = torch.utils.checkpoint.checkpoint(b, x_BLC, cond_BD_or_gss, ca_kv, attn_bias_or_two_vector, attn_fn, scale_schedule, self.rope2d_freqs_grid, use_reentrant=False)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/_compile.py", line 51, in inner
+[rank0]:     return disable_fn(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/_dynamo/eval_frame.py", line 838, in _fn
+[rank0]:     return fn(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/utils/checkpoint.py", line 495, in checkpoint
+[rank0]:     ret = function(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py", line 856, in forward
+[rank0]:     output = self._fsdp_wrapped_module(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/models/basic.py", line 506, in forward
+[rank0]:     x_sa = self.sa(x_sa, attn_bias_or_two_vector, attn_fn, scale_schedule, rope2d_freqs_grid)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/models/basic.py", line 277, in forward
+[rank0]:     qkv = F.linear(input=x, weight=self.mat_qkv.weight, bias=torch.cat((self.q_bias, self.zero_k_bias, self.v_bias))).view(B, L, 3, self.num_heads, self.head_dim)  # BL3Hc
+[rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 24.00 MiB. GPU 0 has a total capacity of 44.52 GiB of which 10.50 MiB is free. Process 3227512 has 4.95 GiB memory in use. Including non-PyTorch memory, this process has 39.55 GiB memory in use. Of the allocated memory 38.74 GiB is allocated by PyTorch, and 176.79 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 16:08:29]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.56s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.28it/s]
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 744, in <module>
+[rank0]:     main()
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 740, in main
+[rank0]:     main_train(args)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 474, in main_train
+[rank0]:     stats, (sec, remain_time, finish_time) = train_one_ep(
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 678, in train_one_ep
+[rank0]:     grad_norm_t, scale_log2_t = trainer.train_step(
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/trainer.py", line 189, in train_step
+[rank0]:     logits_BLV = self.gpt(text_cond_tuple, x_BLC_wo_prefix, scale_schedule=scale_schedule[:training_scales]) # [bs, 1*1+...+64*64, vocab_size or log2(vocab_size)*2]
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py", line 856, in forward
+[rank0]:     output = self._fsdp_wrapped_module(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/models/infinity.py", line 442, in forward
+[rank0]:     x_BLC = torch.utils.checkpoint.checkpoint(b, x_BLC, cond_BD_or_gss, ca_kv, attn_bias_or_two_vector, attn_fn, scale_schedule, self.rope2d_freqs_grid, use_reentrant=False)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/_compile.py", line 51, in inner
+[rank0]:     return disable_fn(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/_dynamo/eval_frame.py", line 838, in _fn
+[rank0]:     return fn(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/utils/checkpoint.py", line 495, in checkpoint
+[rank0]:     ret = function(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py", line 842, in forward
+[rank0]:     args, kwargs = _pre_forward(
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/_runtime_utils.py", line 382, in _pre_forward
+[rank0]:     unshard_fn(state, handle)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/_runtime_utils.py", line 417, in _pre_forward_unshard
+[rank0]:     _unshard(state, handle, state._unshard_stream, state._pre_unshard_stream)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/_runtime_utils.py", line 301, in _unshard
+[rank0]:     handle.unshard()
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/_flat_param.py", line 1342, in unshard
+[rank0]:     unsharded_flat_param = self._alloc_padded_unsharded_flat_param()
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/_flat_param.py", line 1369, in _alloc_padded_unsharded_flat_param
+[rank0]:     _alloc_storage(unsharded_flat_param, flat_param._padded_unsharded_size)  # type: ignore[attr-defined]
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/utils.py", line 180, in _alloc_storage
+[rank0]:     tensor._typed_storage()._resize_(size.numel())
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/storage.py", line 1258, in _resize_
+[rank0]:     self._untyped_storage.resize_(size * self._element_size())
+[rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 608.00 MiB. GPU 0 has a total capacity of 44.52 GiB of which 308.50 MiB is free. Process 3227512 has 4.95 GiB memory in use. Including non-PyTorch memory, this process has 39.26 GiB memory in use. Of the allocated memory 38.15 GiB is allocated by PyTorch, and 477.99 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 16:12:23]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.65s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.21it/s]
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 744, in <module>
+[rank0]:     main()
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 740, in main
+[rank0]:     main_train(args)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 474, in main_train
+[rank0]:     stats, (sec, remain_time, finish_time) = train_one_ep(
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 678, in train_one_ep
+[rank0]:     grad_norm_t, scale_log2_t = trainer.train_step(
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/trainer.py", line 189, in train_step
+[rank0]:     logits_BLV = self.gpt(text_cond_tuple, x_BLC_wo_prefix, scale_schedule=scale_schedule[:training_scales]) # [bs, 1*1+...+64*64, vocab_size or log2(vocab_size)*2]
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py", line 856, in forward
+[rank0]:     output = self._fsdp_wrapped_module(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/models/infinity.py", line 442, in forward
+[rank0]:     x_BLC = torch.utils.checkpoint.checkpoint(b, x_BLC, cond_BD_or_gss, ca_kv, attn_bias_or_two_vector, attn_fn, scale_schedule, self.rope2d_freqs_grid, use_reentrant=False)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/_compile.py", line 51, in inner
+[rank0]:     return disable_fn(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/_dynamo/eval_frame.py", line 838, in _fn
+[rank0]:     return fn(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/utils/checkpoint.py", line 495, in checkpoint
+[rank0]:     ret = function(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py", line 842, in forward
+[rank0]:     args, kwargs = _pre_forward(
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/_runtime_utils.py", line 382, in _pre_forward
+[rank0]:     unshard_fn(state, handle)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/_runtime_utils.py", line 417, in _pre_forward_unshard
+[rank0]:     _unshard(state, handle, state._unshard_stream, state._pre_unshard_stream)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/_runtime_utils.py", line 301, in _unshard
+[rank0]:     handle.unshard()
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/_flat_param.py", line 1342, in unshard
+[rank0]:     unsharded_flat_param = self._alloc_padded_unsharded_flat_param()
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/_flat_param.py", line 1369, in _alloc_padded_unsharded_flat_param
+[rank0]:     _alloc_storage(unsharded_flat_param, flat_param._padded_unsharded_size)  # type: ignore[attr-defined]
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/utils.py", line 180, in _alloc_storage
+[rank0]:     tensor._typed_storage()._resize_(size.numel())
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/storage.py", line 1258, in _resize_
+[rank0]:     self._untyped_storage.resize_(size * self._element_size())
+[rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 608.00 MiB. GPU 0 has a total capacity of 44.52 GiB of which 360.25 MiB is free. Including non-PyTorch memory, this process has 44.16 GiB memory in use. Of the allocated memory 43.02 GiB is allocated by PyTorch, and 512.90 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 16:14:06]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.22s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.64it/s]
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 744, in <module>
+[rank0]:     main()
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 740, in main
+[rank0]:     main_train(args)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 474, in main_train
+[rank0]:     stats, (sec, remain_time, finish_time) = train_one_ep(
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 678, in train_one_ep
+[rank0]:     grad_norm_t, scale_log2_t = trainer.train_step(
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/trainer.py", line 224, in train_step
+[rank0]:     grad_norm_t, scale_log2_t = self.gpt_opt.backward_clip_step(ep=ep, it=it, g_it=g_it, stepping=stepping, logging_params=logging_params, loss=loss, clip_decay_ratio=clip_decay_ratio, stable=args.stable)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/utils/amp_opt.py", line 122, in backward_clip_step
+[rank0]:     loss.backward(retain_graph=False, create_graph=False)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/_tensor.py", line 648, in backward
+[rank0]:     torch.autograd.backward(
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/autograd/__init__.py", line 353, in backward
+[rank0]:     _engine_run_backward(
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/autograd/graph.py", line 824, in _engine_run_backward
+[rank0]:     return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/utils/checkpoint.py", line 1124, in unpack_hook
+[rank0]:     frame.recompute_fn(*args)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/utils/checkpoint.py", line 1518, in recompute_fn
+[rank0]:     fn(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py", line 856, in forward
+[rank0]:     output = self._fsdp_wrapped_module(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/models/basic.py", line 506, in forward
+[rank0]:     x_sa = self.sa(x_sa, attn_bias_or_two_vector, attn_fn, scale_schedule, rope2d_freqs_grid)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/models/basic.py", line 291, in forward
+[rank0]:     q, k = apply_rotary_emb(q, k, scale_schedule, rope2d_freqs_grid, self.pad_to_multiplier, self.rope2d_normalized_by_hw, scale_ind) #, freqs_cis=freqs_cis)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/models/basic.py", line 110, in apply_rotary_emb
+[rank0]:     qk = torch.stack([
+[rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 30.00 MiB. GPU 0 has a total capacity of 44.52 GiB of which 12.25 MiB is free. Including non-PyTorch memory, this process has 44.50 GiB memory in use. Of the allocated memory 43.49 GiB is allocated by PyTorch, and 376.74 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 17:02:19]   =======================================================
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 744, in <module>
+[rank0]:     main()
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 740, in main
+[rank0]:     main_train(args)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 429, in main_train
+[rank0]:     ret = build_everything_from_args(args, saver)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 157, in build_everything_from_args
+[rank0]:     text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 206, in build_model_optimizer
+[rank0]:     vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/utils/load.py", line 36, in build_vae_gpt
+[rank0]:     vae_local = vae_model(vae_st, schedule_mode, codebook_dim, codebook_size, patch_size=patch_size,
+[rank0]:   File "/home/gs285/VAR-defense/infinity/models/bsq_vae/vae.py", line 251, in vae_model
+[rank0]:     vae, new_state_dict, loaded_keys = load_cnn(vae, state_dict["vae"], prefix="", expand=False)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/models/bsq_vae/vae.py", line 26, in load_cnn
+[rank0]:     model.state_dict()[_key].copy_(load_weights)
+[rank0]: RuntimeError: The size of tensor a (14) must match the size of tensor b (32) at non-singleton dimension 0
+
+
+
+
+
+
+
+=======================================================   RESTART [09-07 17:09:43]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.51s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.32it/s]
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 744, in <module>
+[rank0]:     main()
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 740, in main
+[rank0]:     main_train(args)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 474, in main_train
+[rank0]:     stats, (sec, remain_time, finish_time) = train_one_ep(
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 678, in train_one_ep
+[rank0]:     grad_norm_t, scale_log2_t = trainer.train_step(
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/trainer.py", line 285, in train_step
+[rank0]:     wandb_utils.log(wandb_log_dict, step=g_it)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/utils/wandb_utils.py", line 42, in log
+[rank0]:     wandb.log({k: v for k, v in stats.items()}, step=step)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/wandb/sdk/lib/preinit.py", line 36, in preinit_wrapper
+[rank0]:     raise wandb.Error(f"You must call wandb.init() before {name}()")
+[rank0]: wandb.errors.errors.Error: You must call wandb.init() before wandb.log()
+
+
+
+
+
+
+
+=======================================================   RESTART [09-08 14:20:30]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:15<00:15, 15.93s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:15<00:00,  7.97s/it]
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:680: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+  warnings.warn(
+
+
+
+
+
+
+
+=======================================================   RESTART [09-08 14:32:03]   =======================================================
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 767, in <module>
+[rank0]:     main()
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 763, in main
+[rank0]:     main_train(args)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 452, in main_train
+[rank0]:     ret = build_everything_from_args(args, saver)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 165, in build_everything_from_args
+[rank0]:     text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 214, in build_model_optimizer
+[rank0]:     vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/utils/load.py", line 36, in build_vae_gpt
+[rank0]:     vae_local = vae_model(vae_st, schedule_mode, codebook_dim, codebook_size, patch_size=patch_size,
+[rank0]:   File "/home/gs285/VAR-defense/infinity/models/bsq_vae/vae.py", line 251, in vae_model
+[rank0]:     vae, new_state_dict, loaded_keys = load_cnn(vae, state_dict["vae"], prefix="", expand=False)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/models/bsq_vae/vae.py", line 26, in load_cnn
+[rank0]:     model.state_dict()[_key].copy_(load_weights)
+[rank0]: RuntimeError: The size of tensor a (14) must match the size of tensor b (32) at non-singleton dimension 0
+
+
+
+
+
+
+
+=======================================================   RESTART [09-08 14:35:48]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.66s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.20it/s]
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:680: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+  warnings.warn(
+
+
+
+
+
+
+
+=======================================================   RESTART [09-08 14:50:54]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.08s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.84it/s]
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/VAR-defense/infinity/models/basic.py:495: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):    # disable half precision
+/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:680: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+  warnings.warn(
+
+
+
+
+
+
+
+=======================================================   RESTART [09-08 21:33:08]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.22s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.64it/s]
+
+
+
+
+
+
+
+=======================================================   RESTART [09-09 13:32:29]   =======================================================
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 883, in <module>
+[rank0]:     main()
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 879, in main
+[rank0]:     main_train(args)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 513, in main_train
+[rank0]:     ret = build_everything_from_args(args, saver)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 173, in build_everything_from_args
+[rank0]:     text_tokenizer, text_encoder, vae_local, gpt_uncompiled, gpt_wo_ddp, gpt_ddp, gpt_wo_ddp_ema, gpt_ddp_ema, gpt_optim = build_model_optimizer(args, vae_ckpt)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 222, in build_model_optimizer
+[rank0]:     vae_local, gpt_wo_ddp, gpt_wo_ddp_ema = build_vae_gpt(args, vae_ckpt, skip_gpt=False, device=args.model_init_device)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/utils/load.py", line 91, in build_vae_gpt
+[rank0]:     gpt_wo_ddp = gpt_wo_ddp.to(device)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1355, in to
+[rank0]:     return self._apply(convert)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
+[rank0]:     module._apply(fn)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
+[rank0]:     module._apply(fn)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 915, in _apply
+[rank0]:     module._apply(fn)
+[rank0]:   [Previous line repeated 1 more time]
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 942, in _apply
+[rank0]:     param_applied = fn(param)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1341, in convert
+[rank0]:     return t.to(
+[rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 64.00 MiB. GPU 0 has a total capacity of 44.52 GiB of which 16.50 MiB is free. Process 4000505 has 41.92 GiB memory in use. Including non-PyTorch memory, this process has 2.57 GiB memory in use. Of the allocated memory 1.95 GiB is allocated by PyTorch, and 18.09 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+
+
+
+
+
+
+=======================================================   RESTART [09-09 13:48:11]   =======================================================
+
+
+
+
+
+
+
+=======================================================   RESTART [09-09 13:49:33]   =======================================================
+
+
+
+
+
+
+
+=======================================================   RESTART [09-09 13:50:41]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.57s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.27it/s]
+
+
+
+
+
+
+
+=======================================================   RESTART [09-09 14:31:02]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.26s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.58it/s]
+
+
+
+
+
+
+
+=======================================================   RESTART [09-09 14:42:21]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.71s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.16it/s]
+
+
+
+
+
+
+
+=======================================================   RESTART [09-09 17:01:57]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.22s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.63it/s]
+
+
+
+
+
+
+
+=======================================================   RESTART [09-09 22:02:24]   =======================================================
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 893, in <module>
+[rank0]:     main()
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 889, in main
+[rank0]:     main_train(args)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 523, in main_train
+[rank0]:     ret = build_everything_from_args(args, saver)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 156, in build_everything_from_args
+[rank0]:     iters_train, ld_train, ld_val = build_dataloaders(args)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 489, in build_dataloaders
+[rank0]:     ld_train = DataLoader(
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 272, in __init__
+[rank0]:     raise ValueError(
+[rank0]: ValueError: prefetch_factor option could only be specified in multiprocessing.let num_workers > 0 to enable multiprocessing, otherwise set prefetch_factor to None.
+
+
+
+
+
+
+
+=======================================================   RESTART [09-09 22:08:53]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.39s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.43it/s]
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 893, in <module>
+[rank0]:     main()
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 889, in main
+[rank0]:     main_train(args)
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 568, in main_train
+[rank0]:     stats, (sec, remain_time, finish_time) = train_one_ep(
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py", line 826, in train_one_ep
+[rank0]:     grad_norm_t, scale_log2_t = trainer.train_step(
+[rank0]:   File "/home/gs285/VAR-defense/circuit-breaker_original/src/trainer.py", line 233, in train_step
+[rank0]:     logits_BLV = self.gpt(text_cond_tuple, x_BLC_wo_prefix, scale_schedule=scale_schedule[:training_scales]) # [bs, 1*1+...+64*64, vocab_size or log2(vocab_size)*2]
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py", line 856, in forward
+[rank0]:     output = self._fsdp_wrapped_module(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/models/infinity.py", line 390, in forward
+[rank0]:     kv_compact = self.text_norm(kv_compact).contiguous()
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/gs285/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/models/basic.py", line 132, in forward
+[rank0]:     return rms_norm_impl(x.float(), self.weight, epsilon=self.eps).to(src_type)
+[rank0]:   File "/home/gs285/VAR-defense/infinity/models/basic.py", line 35, in rms_norm_impl
+[rank0]:     return (x * torch.rsqrt(x.pow(2).mean(-1, keepdim=True).add_(epsilon))) * weight
+[rank0]: RuntimeError: The size of tensor a (768) must match the size of tensor b (2048) at non-singleton dimension 1
+
+
+
+
+
+
+
+=======================================================   RESTART [09-09 22:15:01]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:00<00:00,  9.02it/s]Loading checkpoint shards: 100%|##########| 2/2 [00:00<00:00, 17.38it/s]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.64s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.22it/s]
+
+
+
+
+
+
+=======================================================   RESTART [09-15 17:15:47]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards: 100%|##########| 2/2 [00:00<00:00, 23.31it/s]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:22<00:22, 22.07s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:22<00:00, 11.04s/it]
+
+
+
+
+
+
+=======================================================   RESTART [09-15 20:37:16]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards: 100%|##########| 2/2 [00:00<00:00, 25.19it/s]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:22<00:22, 22.17s/it]Loading checkpoint shards: 100%|##########| 2/2 [01:49<00:00, 60.55s/it]Loading checkpoint shards: 100%|##########| 2/2 [01:49<00:00, 54.79s/it]
+
+
+
+
+
+
+=======================================================   RESTART [09-16 22:15:12]   =======================================================
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards: 100%|##########| 2/2 [00:00<00:00, 25.18it/s]
+
+
+
+
+
+
+=======================================================   RESTART [09-16 22:15:34]   =======================================================
+
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.93s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.03it/s]Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:00<00:00,  9.22it/s]Loading checkpoint shards: 100%|##########| 2/2 [00:00<00:00, 17.65it/s]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|#####     | 1/2 [00:01<00:01,  1.91s/it]Loading checkpoint shards: 100%|##########| 2/2 [00:01<00:00,  1.05it/s]

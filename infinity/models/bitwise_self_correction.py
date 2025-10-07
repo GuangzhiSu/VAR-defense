@@ -33,19 +33,14 @@ class BitwiseSelfCorrection(object):
         with torch.amp.autocast('cuda', enabled = False):
             B = raw_features.shape[0]
             if raw_features.dim() == 4:
-                print("[dbg] raw_features:", raw_features.shape)
                 codes_out = raw_features.unsqueeze(2)
             else:
-                print("[dbg] raw_features:", raw_features.shape)
                 codes_out = raw_features
-            print("[dbg] target last scale:", vae_scale_schedule[-1])
             
             # Adjust codes_out size to match vae_scale_schedule if needed
             target_t, target_h, target_w = vae_scale_schedule[-1]
             if codes_out.shape[-3] != target_t or codes_out.shape[-2] != target_h or codes_out.shape[-1] != target_w:
-                print(f"[dbg] Resizing codes_out from {codes_out.shape} to match target size ({target_t}, {target_h}, {target_w})")
                 codes_out = F.interpolate(codes_out, size=(target_t, target_h, target_w), mode='trilinear', align_corners=False)
-                print(f"[dbg] Resized codes_out shape: {codes_out.shape}")
             
             cum_var_input = 0
             gt_all_bit_indices = []

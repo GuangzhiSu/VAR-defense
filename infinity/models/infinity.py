@@ -397,7 +397,6 @@ class Infinity(nn.Module):
             
             sos = sos.unsqueeze(1).expand(B, 1, -1) + self.pos_start.expand(B, 1, -1)
             x_BLC = torch.cat((sos, self.word_embed(self.norm0_ve(x_BLC_wo_prefix))), dim=1)
-            print(f'[Infinity] x_BLC shape: {x_BLC.shape}, cond_BD_or_gss shape: {cond_BD_or_gss.shape}, ca_kv shape: {ca_kv[0].shape}, scale_schedule: {scale_schedule}', flush=True)
 
             # [1.1. pad the seqlen dim]
             l_end = x_BLC.shape[1]

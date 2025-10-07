@@ -267,7 +267,7 @@ class T2IIterableDataset(IterableDataset):
                 except Exception as e:
                     print(e)
             captions = [item[0] for item in batch_data]
-            images = torch.stack([item[1] for item in batch_data])
+            images = torch.stack([item[1] for item in batch_data]).detach()
             yield (images, captions)
             del batch_data
             del images

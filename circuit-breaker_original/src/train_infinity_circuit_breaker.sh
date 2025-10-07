@@ -1,18 +1,59 @@
-#!/bin/bash
-# Bash script to run Infinity Circuit Breaker Training
-# Usage: bash train_infinity_circuit_breaker.sh
+#!/usr/bin/bash
+#SBATCH --job-name=train-infinity-circuit-breaker
+#SBATCH --ntasks 1
+#SBATCH --cpus-per-task 8
+#SBATCH --gpus-per-task 4
+#SBATCH --mem 256g
+#SBATCH -e slurm-%j.err
+#SBATCH -o slurm-%j.out
+#SBATCH --partition athena
+#SBATCH --account gs285
 
-export CUDA_VISIBLE_DEVICES=1,2,3
+
+set -euo pipefail
+echo "Host: $(hostname)  JobID: ${SLURM_JOB_ID:-N/A}"
+date
+
+# ===== 环境准备 =====
+
+if [ -f "/home/gs285/miniconda3/etc/profile.d/conda.sh" ]; then
+  source /home/gs285/miniconda3/etc/profile.d/conda.sh
+else
+  # 方式2：回退到 hook（某些环境没有 etc/profile.d）
+  export PATH="/home/gs285/miniconda3/bin:$PATH"
+  eval "$(/home/gs285/miniconda3/bin/conda shell.bash hook)"
+fi
+
+conda activate Infi        # <<< 使用你的环境名
+
+# ===== 分布式训练环境设置 =====
+export CUDA_VISIBLE_DEVICES=0,1,2,3
+export MASTER_ADDR=localhost
+export MASTER_PORT=12355
+export WORLD_SIZE=4
+export RANK=0
+export LOCAL_RANK=0
+
+# 设置PyTorch分布式训练
+export NCCL_DEBUG=INFO
+export NCCL_IB_DISABLE=1
+export NCCL_P2P_DISABLE=1
+
+# 内存优化设置
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128
+export CUDA_LAUNCH_BLOCKING=0
+export CUDA_CACHE_DISABLE=1
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128,roundup_power2_divisions:16
 
 # ========== User Configurable Arguments ==========
 # Infinity model arguments
-MODEL="8b"
-VAE_CKPT="/home/gs285/VAR/my_model/weights/infinity_vae_d56_f8_14_patchify.pth"
-RUSH_RESUME=""
+MODEL="2b"
+VAE_CKPT="/home/gs285/VAR-defense/weights/infinity_vae_d56_f8_14_patchify.pth"
+RUSH_RESUME="/home/gs285/VAR-defense/weights/infinity_2b_reg.pth"
 BED="./checkpoints"
 LOCAL_OUT="./local_output"
-PROJECT_NAME="infinity_circuit_breaker"
-EXP_NAME="experiment"
+PROJECT_NAME="Infinity-defense"
+EXP_NAME="first_try"
 
 # Training arguments
 EP=100
@@ -30,8 +71,8 @@ COS=1
 ENABLE_CHECKPOINTING="full-block"
 TBLR=6e-3
 PN="0.06M"
-LBS=4
-WORKERS=8
+LBS=1  # 每个GPU的batch size，4个GPU总共4
+WORKERS=4  # 减少worker数量以节省内存
 SHORT_CAP_PROB=0.5
 ONLINE_T5=1
 USE_STREAMING_DATASET=1
@@ -66,8 +107,8 @@ DATA_PATH="./data"
 DATA_LOAD_RESO=512
 TLEN=512
 SHORT_CAP_PROB=0.2
-WORKERS=4
-PREFETCH_FACTOR=2
+WORKERS=2
+PREFETCH_FACTOR=1  # 减少预取因子以节省内存
 
 # Circuit breaker specific arguments
 TARGET_LAYERS="10,12,14,16,18,20"
@@ -78,9 +119,14 @@ VALSETS="AlpacaSupervisedDataset#HarmfulDataset"
 ADV_STRING="Sure here's"
 FULL_LAYERS=False
 
+# Selective finetuning controls (new)
+SELECTIVE_LAYERS="25-29"        # 支持 "25-29" 或 "1-3,6,8-9" 格式
+FREEZE_TO_SELECTIVE_LAYERS=True  # True 表示只训练 SELECTIVE_LAYERS 指定的层
+UNFREEZE_LAYERNORM=True          # 可选：也训练所有 LayerNorm 参数
+
 # Data paths for circuit breaker
-HARMFUL_PROMPTS_PATH="/home/gs285/VAR/my_model/prompt_generation/output/harmful_prompts"
-SANITIZED_PROMPTS_PATH="/home/gs285/VAR/my_model/prompt_generation/output/sanitized_prompts"
+HARMFUL_PROMPTS_PATH="/home/gs285/VAR-defense/prompt_generation/output/harmful_prompts"
+SANITIZED_PROMPTS_PATH="/home/gs285/VAR-defense/prompt_generation/output/sanitized_prompts"
 VALIDATION_RATIO=0.1
 CATEGORY="hate"
 LORA_R=8
@@ -105,7 +151,12 @@ COEFF_SCHEDULE="linear_converge"
 SC_LOSS_TYPE="orig_act_dotprod"
 
 # ========== Run Training ==========
-nohup python3 /home/gs285/VAR/my_model/circuit-breaker_original/src/train_infinity_circuit_breaker.py \
+echo "Starting distributed training with 4 GPUs..."
+echo "CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES"
+echo "WORLD_SIZE: $WORLD_SIZE"
+
+torchrun --nproc_per_node=4 --master_port=12355 \
+    /home/gs285/VAR-defense/circuit-breaker_original/src/train_infinity_circuit_breaker.py \
     --model "$MODEL" \
     --vae_ckpt "$VAE_CKPT" \
     --rush_resume "$RUSH_RESUME" \
@@ -167,6 +218,9 @@ nohup python3 /home/gs285/VAR/my_model/circuit-breaker_original/src/train_infini
     --sanitized_prompts_path "$SANITIZED_PROMPTS_PATH" \
     --validation_ratio $VALIDATION_RATIO \
     --category "$CATEGORY" \
+    --freeze_to_selective_layers $FREEZE_TO_SELECTIVE_LAYERS \
+    --selective_layers "$SELECTIVE_LAYERS" \
+    --unfreeze_layernorm $UNFREEZE_LAYERNORM \
     --target_layers "$TARGET_LAYERS" \
     --transform_layers "$TRANSFORM_LAYERS" \
     --lorra_alpha $LORRA_ALPHA \
@@ -194,8 +248,3 @@ nohup python3 /home/gs285/VAR/my_model/circuit-breaker_original/src/train_infini
     --sc_train_seq_type "$SC_TRAIN_SEQ_TYPE" \
     --coeff_schedule "$COEFF_SCHEDULE" \
     --sc_loss_type "$SC_LOSS_TYPE" \
-    "$@" > /home/gs285/VAR/my_model/circuit-breaker_original/log/train_infinity_circuit_breaker.log 2>&1 &
-
-echo "Training started with PID: $!"
-echo "Log file: /home/gs285/VAR/my_model/circuit-breaker_original/log/train_infinity_circuit_breaker.log"
-echo "To monitor progress: tail -f /home/gs285/VAR/my_model/circuit-breaker_original/log/train_infinity_circuit_breaker.log" 

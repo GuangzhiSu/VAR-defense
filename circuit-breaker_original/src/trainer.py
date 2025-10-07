@@ -20,6 +20,7 @@ import torch.distributed as tdist
 from torch.amp import autocast
 import cv2
 import sys
+import wandb
 
 sys.path.append('/home/gs285/VAR/my_model')
 import infinity.utils.dist as dist
@@ -118,6 +119,49 @@ class InfinityTrainer(object):
         self.last_prog_si = -1
         self.first_prog = True
         self.generator = np.random.default_rng(0)
+
+        # Optional teacher (frozen reference) model, can be assigned after init
+        self.teacher_gpt = None
+
+    def logits_from_inputs(self, inp_B3HW: FTen, text_cond_tuple: Union[ITen, FTen], args: arg_util.Args, use_student: bool = True):
+        """
+        Compute logits BLV from inputs using either the student model (self.gpt) or teacher model (self.teacher_gpt/self.gpt_wo_ddp).
+        """
+        B = inp_B3HW.shape[0]
+        T = 1 if inp_B3HW.dim() == 4 else inp_B3HW.shape[2]
+        device = inp_B3HW.device
+
+        h_div_w = inp_B3HW.shape[-2] / inp_B3HW.shape[-1]
+        h_div_w_templates = np.array(list(dynamic_resolution_h_w.keys()))
+        h_div_w_template = h_div_w_templates[np.argmin(np.abs(h_div_w-h_div_w_templates))]
+        scale_schedule = dynamic_resolution_h_w[h_div_w_template][args.pn]['scales']
+        scale_schedule = [ (min(t, T//4+1), h, w) for (t,h, w) in scale_schedule]
+
+        # forward path copied from train_step
+        with self.gpt_opt.amp_ctx:
+            with torch.amp.autocast('cuda', enabled=False):
+                with torch.no_grad():
+                    if args.apply_spatial_patchify:
+                        vae_scale_schedule = [(pt, 2*ph, 2*pw) for pt, ph, pw in scale_schedule]
+                    else:
+                        vae_scale_schedule = scale_schedule
+                    raw_features, _, _ = self.vae_local.encode_for_raw_features(inp_B3HW, scale_schedule=vae_scale_schedule)
+
+            x_BLC_wo_prefix, gt_ms_idx_Bl = self.bitwise_self_correction.flip_requant(vae_scale_schedule, inp_B3HW, raw_features, device)
+
+            training_scales = args.always_training_scales
+            training_seq_len = np.array(scale_schedule)[:training_scales].prod(axis=1).sum()
+            x_BLC_wo_prefix = x_BLC_wo_prefix[:, :(training_seq_len-np.array(scale_schedule[0]).prod()), :]
+
+            model_for_fwd = None
+            if use_student:
+                model_for_fwd = self.gpt
+            else:
+                model_for_fwd = self.teacher_gpt if self.teacher_gpt is not None else self.gpt_wo_ddp
+
+            logits_BLV = model_for_fwd(text_cond_tuple, x_BLC_wo_prefix, scale_schedule=scale_schedule[:training_scales])
+
+        return logits_BLV
     
     @torch.no_grad()
     def eval_ep(self, ep: int, args: arg_util.Args, ld_val: DataLoader):
@@ -282,7 +326,11 @@ class InfinityTrainer(object):
                 wandb_log_dict[f'Detail/L_s{si+1:02d}'] = loss_si
                 wandb_log_dict[f'Detail/Acc_bit_s{si+1:02d}'] = acc_bit_si
                 wandb_log_dict[f'Detail/Acc_token_s{si+1:02d}'] = acc_token_si
-            wandb_utils.log(wandb_log_dict, step=g_it)
+            try:
+                if wandb.run:
+                    wandb_utils.log(wandb_log_dict, step=g_it)
+            except Exception as e:
+                print(f"Warning: Failed to log to wandb: {e}")
         
         return grad_norm_t, scale_log2_t
     

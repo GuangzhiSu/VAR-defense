@@ -16,3 +16,5 @@
 *.log
 *.txt
 *.npy
+*.err
+*.out

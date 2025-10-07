@@ -54,3 +54,4 @@ filelock==3.18.0
 # System utilities
 psutil==7.0.0
 gputil==1.4.0
+timm==0.9.6

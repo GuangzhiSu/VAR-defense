@@ -35,13 +35,15 @@ class InfinityCircuitBreakerDataset(IterableDataset):
         self.buffer_size = buffersize
         self.seed = seed
         self.pn = pn
-        self.online_t5 = online_t5
+        self.online_t5 = getattr(args, 'online_t5', online_t5)
         self.batch_size = batch_size
         self.num_replicas = num_replicas
         self.rank = rank
         self.dataloader_workers = max(1, dataloader_workers)
         self.dynamic_resolution_across_gpus = dynamic_resolution_across_gpus
         self.enable_dynamic_length_prompt = enable_dynamic_length_prompt
+        self.Ct5 = getattr(args, 'Ct5', 2048)
+        self.t5_path = getattr(args, 't5_path', 't5-base')
         
         # Circuit breaker specific parameters
         self.harmful_prompts_path = harmful_prompts_path
@@ -87,21 +89,22 @@ class InfinityCircuitBreakerDataset(IterableDataset):
         print(f'num_replicas: {num_replicas}, rank: {rank}, dataloader_workers: {dataloader_workers}, seed:{seed}')
     
     def _init_text_encoder(self):
-        """Initialize T5 text encoder"""
+        """Initialize T5 text encoder matching args.t5_path (Ct5 dim)"""
         try:
-            text_encoder = T5EncoderModel.from_pretrained('t5-base')
-            return text_encoder
+            model = T5EncoderModel.from_pretrained(self.t5_path)
+            return model
         except Exception as e:
-            print(f"Warning: Could not load T5 encoder: {e}")
+            print(f"Warning: Could not load T5 encoder from {self.t5_path}: {e}")
             return None
     
     def _init_tokenizer(self):
-        """Initialize T5 tokenizer"""
+        """Initialize T5 tokenizer matching args.t5_path"""
         try:
-            tokenizer = AutoTokenizer.from_pretrained('t5-base')
+            tokenizer: T5TokenizerFast = AutoTokenizer.from_pretrained(self.t5_path, revision=None, legacy=True)
+            tokenizer.model_max_length = self.max_caption_len
             return tokenizer
         except Exception as e:
-            print(f"Warning: Could not load T5 tokenizer: {e}")
+            print(f"Warning: Could not load T5 tokenizer from {self.t5_path}: {e}")
             return None
     
     def _load_retain_and_validation_data(self):
@@ -338,11 +341,12 @@ class InfinityCircuitBreakerDataset(IterableDataset):
     def _prepare_text_condition(self, text_prompt):
         """Prepare text condition tuple for Infinity model"""
         if self.text_encoder is None:
-            # Fallback: create dummy text features
-            dummy_features = torch.randn(1, 512, 768)  # (batch, seq_len, hidden_dim)
-            lens = [512]
-            cu_seqlens_k = torch.tensor([0, 512], dtype=torch.int32)
-            Ltext = 512
+            # Fallback: create dummy text features that match Ct5
+            seq_len = 512
+            dummy_features = torch.randn(1, seq_len, self.Ct5)
+            lens = [seq_len]
+            cu_seqlens_k = torch.tensor([0, seq_len], dtype=torch.int32)
+            Ltext = seq_len
             return (dummy_features, lens, cu_seqlens_k, Ltext)
         
         # Tokenize text
@@ -366,6 +370,19 @@ class InfinityCircuitBreakerDataset(IterableDataset):
             input_ids=input_ids, 
             attention_mask=attention_mask
         )['last_hidden_state'].float()
+        # Ensure hidden size matches expected Ct5 (e.g., 2048). If mismatch, pad/truncate.
+        hidden_size = text_features.shape[-1]
+        if hidden_size != self.Ct5:
+            try:
+                if hidden_size < self.Ct5:
+                    text_features = F.pad(text_features, (0, self.Ct5 - hidden_size))
+                else:
+                    text_features = text_features[..., :self.Ct5]
+                if not hasattr(self, '_warned_dim_mismatch'):
+                    print(f"Warning: T5 hidden size {hidden_size} != Ct5 {self.Ct5}. Applied pad/truncate.")
+                    self._warned_dim_mismatch = True
+            except Exception as _:
+                pass
         
         # Prepare condition tuple
         lens = attention_mask.sum(dim=-1).tolist()
@@ -400,28 +417,73 @@ class InfinityCircuitBreakerDataset(IterableDataset):
         num_batches = len(self)
         
         for batch_idx in range(num_batches):
-            batch_data = []
-            
-            # Create a batch of data
-            for _ in range(self.batch_size):
-                # Get data from different sources - handle empty data gracefully
+            # Build a batch of retain/cb/val triplets
+            batch_images = []
+            retain_text_conds, cb_text_conds, val_text_conds = [], [], []
+            retain_ids, retain_msks = [], []
+            cb_ids, cb_msks = [], []
+            val_ids, val_msks = [], []
+            retain_prompts, cb_prompts, val_prompts = [], [], []
+
+            for bi in range(self.batch_size):
+                idx = (batch_idx * self.batch_size + bi)
+
+                # Select prompts
                 if len(self.retain_data) > 0:
-                    retain_idx = (batch_idx * self.batch_size + _) % len(self.retain_data)
-                    retain_data = self.retain_data[retain_idx]
-                    prompt = retain_data['prompt']
+                    retain_d = self.retain_data[idx % len(self.retain_data)]
+                    retain_prompt = retain_d['prompt']
                 else:
-                    # Use circuit breaker data if retain data is empty
-                    prompt = "Default training prompt for circuit breaker"
-                
-                # Create dummy image for the prompt
-                dummy_image = self._create_dummy_image(prompt)
-                batch_data.append((prompt, dummy_image))
-            
-            # Prepare batch output in the format expected by train.py
-            captions = [item[0] for item in batch_data]
-            images = torch.stack([item[1] for item in batch_data])
-            
-            yield (images, captions)
+                    retain_prompt = "Default training prompt for circuit breaker"
+
+                if len(self.circuit_breaker_data) > 0:
+                    cb_d = self.circuit_breaker_data[idx % len(self.circuit_breaker_data)]
+                    cb_prompt = cb_d['prompt']
+                else:
+                    cb_prompt = "Default circuit breaker prompt"
+
+                if len(self.validation_data) > 0:
+                    val_d = self.validation_data[idx % len(self.validation_data)]
+                    val_prompt = val_d['prompt']
+                else:
+                    val_prompt = "Default validation prompt"
+
+                # Dummy image
+                dummy_image = self._create_dummy_image(retain_prompt)
+                batch_images.append(dummy_image)
+
+                # Text cond tuples for Infinity
+                retain_text_conds.append(self._prepare_text_condition(retain_prompt))
+                cb_text_conds.append(self._prepare_text_condition(cb_prompt))
+                val_text_conds.append(self._prepare_text_condition(val_prompt))
+
+                # Tokenized ids/masks for cb loss logging (if needed later)
+                r_ids, r_msk = self._tokenize_prompt(retain_prompt)
+                c_ids, c_msk = self._tokenize_prompt(cb_prompt)
+                v_ids, v_msk = self._tokenize_prompt(val_prompt)
+                retain_ids.append(r_ids); retain_msks.append(r_msk)
+                cb_ids.append(c_ids); cb_msks.append(c_msk)
+                val_ids.append(v_ids); val_msks.append(v_msk)
+                retain_prompts.append(retain_prompt); cb_prompts.append(cb_prompt); val_prompts.append(val_prompt)
+
+            images = torch.stack(batch_images)
+            # Pack into batch dict
+            batch = {
+                'images': images,
+                'text_cond_tuple': retain_text_conds,
+                'text_cond_tuple_circuit_breaker': cb_text_conds,
+                'text_cond_tuple_val': val_text_conds,
+                'input_ids': torch.stack(retain_ids),
+                'attention_mask': torch.stack(retain_msks),
+                'input_ids_circuit_breaker': torch.stack(cb_ids),
+                'attention_mask_circuit_breaker': torch.stack(cb_msks),
+                'input_ids_val': torch.stack(val_ids),
+                'attention_mask_val': torch.stack(val_msks),
+                'retain_prompts': retain_prompts,
+                'cb_prompts': cb_prompts,
+                'val_prompts': val_prompts,
+            }
+
+            yield batch
     
     def getitem(self, i) -> Dict[str, torch.Tensor]:
         """Get a training example in the format needed for circuit breaker training"""
